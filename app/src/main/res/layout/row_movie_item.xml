@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="obj"
+            type="com.android.popularmovies.Movie"/>
+    </data>
+
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/gridView"
+                 android:layout_width="match_parent"
+                 android:layout_height="270dp">
+
+        <ImageView
+            android:id="@+id/itemImage"
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            app:imageUrl="@{obj.poster_path}"
+            android:scaleType="fitXY"/>
+
+        <TextView
+            android:id="@+id/tv_view_holder_instance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:textColor="@color/colorWhite"
+            android:layout_centerHorizontal="true"
+            android:layout_alignBottom="@+id/itemImage"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:padding="4dp"
+            android:gravity="center"
+            android:background="@color/textTransparent"
+            android:text="@{obj.original_title}"/>
+    </RelativeLayout>
+</layout>
