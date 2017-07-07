@@ -1,8 +1,11 @@
 package com.android.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.LoaderManager;
@@ -17,7 +20,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.popularmovies.adapter.Movie;
+import com.android.popularmovies.adapter.MyAdapter;
+import com.android.popularmovies.background.MoviesLoader;
 import com.android.popularmovies.databinding.ActivityMainBinding;
 import com.google.gson.Gson;
 
@@ -33,19 +40,27 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private MyAdapter moviesAdapter;
     private SharedPreferences sharedPreferences;
     private String sortBy;
+    private Toast connectionToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.emptyView.setVisibility(View.GONE);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         int columns = setupSharedPreferences();
         setAdapter(columns, new ArrayList<Movie>());
-        getSupportLoaderManager().initLoader(1, null, this).forceLoad();
+
+        if (checkConnection()) {
+            getSupportLoaderManager().initLoader(1, null, this).forceLoad();
+        } else {
+            setInfoNoConnection();
+        }
 
         binding.recyclerView.setOnTouchListener(this);
 
@@ -53,9 +68,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        View lastView = binding.recyclerView.getLayoutManager().findViewByPosition(moviesAdapter.getItemCount() - 1);
+        View firstView = binding.recyclerView.getLayoutManager().findViewByPosition(moviesAdapter.getItemCount() - 20);
         if (binding.recyclerView.getLayoutManager().canScrollVertically() && (moviesAdapter.getItemCount() / 20) == pageNoInteger) {
-            pageNoInteger = (moviesAdapter.getItemCount() / 20) + 1;
-            getSupportLoaderManager().restartLoader(1, null, MainActivity.this).forceLoad();
+            if (lastView != null && lastView.isShown() || firstView != null && firstView.isShown()) {
+                if (checkConnection()) {
+                    pageNoInteger = (moviesAdapter.getItemCount() / 20) + 1;
+                    getSupportLoaderManager().restartLoader(1, null, MainActivity.this).forceLoad();
+                }else {
+                    setInfoNoConnection();
+                }
+            }
         }
         return false;
     }
@@ -103,9 +126,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             moviesAdapter.clearMovies();
         }
         if (data != null && !data.isEmpty()) {
+            binding.emptyView.setVisibility(View.GONE);
             moviesAdapter.setMovies(data);
         } else {
-            binding.emptyView.setText(R.string.no_movies);
+            binding.emptyView.setVisibility(View.VISIBLE);
+            binding.emptyTitleText.setText(getString(R.string.server_problem));
+            binding.emptySubtitleText.setText(getString(R.string.server_problem_sub_text));
         }
     }
 
@@ -125,6 +151,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.action_refresh:
+                restartLoader();
+                break;
             case R.id.action_sortBy:
                 openBottomDialog();
                 break;
@@ -166,8 +195,32 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         } else if (key.equals(getString(R.string.pref_sort_by_key))) {
             pageNoInteger = 1;
             sortBy = sharedPreferences.getString(key, getString(R.string.pref_sort_by_most_popular_default));
-            getSupportLoaderManager().restartLoader(1, null, this).forceLoad();
+            restartLoader();
         }
     }
 
+    private void restartLoader() {
+        if (checkConnection()) {
+            binding.recyclerView.setVisibility(View.VISIBLE);
+            getSupportLoaderManager().restartLoader(1, null, this).forceLoad();
+        } else {
+            setInfoNoConnection();
+        }
+    }
+
+
+    private boolean checkConnection() {
+        ConnectivityManager cm = (ConnectivityManager) MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
+    private void setInfoNoConnection() {
+        binding.recyclerView.setVisibility(View.GONE);
+        binding.loadingIndicator.setVisibility(View.GONE);
+        binding.emptyView.setVisibility(View.VISIBLE);
+        binding.emptyTitleText.setText(getString(R.string.no_connection));
+        binding.emptySubtitleText.setText(getString(R.string.no_connection_sub_text));
+    }
 }

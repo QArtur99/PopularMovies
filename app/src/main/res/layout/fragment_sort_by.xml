@@ -5,7 +5,6 @@
               android:clickable="true"
               android:orientation="vertical">
 
-
     <TextView
         android:id="@+id/mostPopular"
         android:layout_width="match_parent"
@@ -15,10 +14,9 @@
         android:paddingEnd="64dp"
         android:paddingStart="64dp"
         android:paddingTop="16dp"
-        android:text="Most popular"
+        android:text="@string/most_popular"
         android:textColor="@drawable/selector_text"
         android:textSize="16sp"/>
-
 
     <TextView
         android:id="@+id/highestRated"
@@ -29,8 +27,7 @@
         android:paddingEnd="64dp"
         android:paddingStart="64dp"
         android:paddingTop="16dp"
-        android:text="Highest rated"
+        android:text="@string/highest_rated"
         android:textColor="@drawable/selector_text"
         android:textSize="16sp"/>
-
 </LinearLayout>

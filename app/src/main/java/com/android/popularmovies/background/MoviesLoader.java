@@ -1,7 +1,9 @@
-package com.android.popularmovies;
+package com.android.popularmovies.background;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
+
+import com.android.popularmovies.adapter.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +34,7 @@ public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
         list = new ArrayList<>();
 
         try {
-            getBooksList();
+            getMoviesList();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -40,7 +42,7 @@ public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
         return list;
     }
 
-    private void getBooksList() throws IOException, JSONException {
+    private void getMoviesList() throws IOException, JSONException {
         String jsonString = TheMovieDbAPI.getMoviesString(sortBy, pageNo);
         JSONObject jsonObject = new JSONObject(jsonString);
         JSONArray jsonArray = jsonObject.getJSONArray("results");
@@ -48,7 +50,6 @@ public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
         for (int i = 0; bookAmount > i; i++) {
             JSONObject jsonBookData = jsonArray.getJSONObject(i);
             list.add(new Movie(jsonBookData));
-
         }
     }
 }

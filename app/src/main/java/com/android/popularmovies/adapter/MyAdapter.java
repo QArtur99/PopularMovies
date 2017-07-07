@@ -1,4 +1,6 @@
-package com.android.popularmovies;
+package com.android.popularmovies.adapter;
+
+import com.android.popularmovies.R;
 
 import java.util.List;
 

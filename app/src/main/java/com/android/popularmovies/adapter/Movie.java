@@ -1,34 +1,34 @@
-package com.android.popularmovies;
+package com.android.popularmovies.adapter;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 
+import com.android.popularmovies.BR;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.Serializable;
 
 /**
  * Created by ART_F on 2017-06-29.
  */
 
 public class Movie extends BaseObservable {
-    String vote_count;
-    String id;
-    String video;
-    String vote_average;
-    String popularity;
+    public String vote_count;
+    public String id;
+    public String video;
+    public String vote_average;
+    public String popularity;
     public String poster_path;
-    String original_language;
-    String original_title;
-    String genre_ids;
-    String backdrop_path;
-    String adult;
-    String overview;
-    String release_date;
+    public String original_language;
+    public String original_title;
+    public String genre_ids;
+    public String backdrop_path;
+    public String adult;
+    public String overview;
+    public String release_date;
 
 
-    Movie(JSONObject jsonObject) throws JSONException {
+    public Movie(JSONObject jsonObject) throws JSONException {
         if (jsonObject.has("vote_count")) {
             vote_count = jsonObject.getString("vote_count");
         }

@@ -1,4 +1,4 @@
-package com.android.popularmovies;
+package com.android.popularmovies.adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import com.android.popularmovies.BR;
 import com.android.popularmovies.databinding.RowMovieItemBinding;
 
 

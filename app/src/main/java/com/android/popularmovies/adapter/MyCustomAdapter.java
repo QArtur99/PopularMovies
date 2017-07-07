@@ -1,4 +1,4 @@
-package com.android.popularmovies;
+package com.android.popularmovies.adapter;
 
 import android.databinding.BindingAdapter;
 import android.widget.ImageView;
