@@ -24,8 +24,10 @@ public class TheMovieDbAPI {
 
     private static final String API_KEY = "api_key";
     private static final String PAGE = "page";
+    private static final String VIDEOS = "videos";
+    private static final String REVIEWS = "reviews";
 
-    //Set API TOKEN HERE
+    //Set api key here
     private static final String THE_MOVIE_DB_API_TOKEN = BuildConfig.THE_MOVIE_DB_API_TOKEN;
     private static final String THE_MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
 
@@ -33,9 +35,25 @@ public class TheMovieDbAPI {
         HashMap<String, String> args = new HashMap<>();
         args.put(API_KEY, THE_MOVIE_DB_API_TOKEN);
         args.put(PAGE, pageNo);
+
         String url = THE_MOVIE_DB_BASE_URL + sortBy + "?" + getUri(args);
-        String jsonString = getQueryJSONObject(url);
-        return jsonString;
+        return getQueryJSONObject(url);
+    }
+
+    public static String getMovieReviews(String movieId) throws JSONException, IOException {
+        HashMap<String, String> args = new HashMap<>();
+        args.put(API_KEY, THE_MOVIE_DB_API_TOKEN);
+
+        String url = THE_MOVIE_DB_BASE_URL + movieId + "/" + REVIEWS + "?" + getUri(args);
+        return getQueryJSONObject(url);
+    }
+
+    public static String getMovieTrailers(String movieId) throws JSONException, IOException {
+        HashMap<String, String> args = new HashMap<>();
+        args.put(API_KEY, THE_MOVIE_DB_API_TOKEN);
+
+        String url = THE_MOVIE_DB_BASE_URL + movieId + "/" + VIDEOS + "?" + getUri(args);
+        return getQueryJSONObject(url);
     }
 
     private static String getQueryJSONObject(String urlString) throws IOException {

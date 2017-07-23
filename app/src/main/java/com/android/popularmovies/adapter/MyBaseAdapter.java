@@ -1,6 +1,8 @@
 package com.android.popularmovies.adapter;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.graphics.Point;
@@ -45,9 +47,20 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter<MyBaseAdapter.M
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
         display.getRealSize(size);
-        int width = size.x / getNumberOfColumns();
+        int width = size.x;
+        int widthDp = (int) (width / Resources.getSystem().getDisplayMetrics().density);
         GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) relativeLayout.getLayoutParams();
-        layoutParams.height = (int) (width * 1.5);
+
+        if(context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+                && widthDp >= 600){
+            int spaceWidth = (int) (width / 3);
+            int posterWidth =  spaceWidth / getNumberOfColumns();
+            layoutParams.width = (int)  posterWidth;
+            layoutParams.height = (int) (posterWidth * 1.5);
+        }else{
+            int posterWidth =  width / getNumberOfColumns();
+            layoutParams.height = (int) (posterWidth * 1.5);
+        }
         relativeLayout.setLayoutParams(layoutParams);
     }
 

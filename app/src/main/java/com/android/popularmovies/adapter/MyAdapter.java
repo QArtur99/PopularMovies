@@ -50,7 +50,7 @@ public class MyAdapter extends MyBaseAdapter {
         notifyDataSetChanged();
     }
 
-    public List<Movie> getData(){
+    public List<Movie> getData() {
         return data;
     }
 

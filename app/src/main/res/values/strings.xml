@@ -18,6 +18,7 @@
 
 
     //Settings sort by
+    <string name="favorite">Favorite</string>
     <string name="most_popular">Most popular</string>
     <string name="highest_rated">Highest rated</string>
 
@@ -25,6 +26,7 @@
     <string name="pref_sort_by_key" translatable="false">sort_by</string>
     <string name="pref_sort_by_most_popular_default" translatable="false">popular</string>
     <string name="pref_sort_by_highest_rated" translatable="false">top_rated</string>
+    <string name="pref_sort_by_favorite" translatable="false">favorite</string>
 
 
 
@@ -37,5 +39,15 @@
     <string name="two_columns">Two columns</string>
     <string name="three_columns">Three columns</string>
     <string name="four_columns">Four columns</string>
+
+
+
+    //Add
+    <string name="editor_insert_movie_successful">Movie added to favorite</string>
+    <string name="editor_insert_movie_failed">Error with adding movie</string>
+
+    <string name="editor_delete_product_successful">Movie removed from favorite</string>
+    <string name="editor_delete_product_failed">Error with removing movie</string>
+
 
 </resources>

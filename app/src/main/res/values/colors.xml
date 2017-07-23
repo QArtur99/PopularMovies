@@ -9,5 +9,9 @@
     <color name="textTransparent">#BB424242</color>
     <color name="whiteTransparent">#E0FFFFFF</color>
     <color name="detailMovieText">#212121</color>
+    <color name="shapeBackground">#E0FFFFFF</color>
+    <color name="shapeColor">#000000</color>
+    <color name="fab">#F2E676</color>
+    <color name="redFavorite">#e57373</color>
 
 </resources>
