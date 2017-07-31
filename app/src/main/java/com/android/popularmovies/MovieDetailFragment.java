@@ -73,8 +73,8 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
             setTextBackground();
             setDetailData();
 
-            getActivity().getSupportLoaderManager().restartLoader(1, null, this).forceLoad();
             getActivity().getSupportLoaderManager().restartLoader(2, null, this).forceLoad();
+            getActivity().getSupportLoaderManager().restartLoader(3, null, this).forceLoad();
         }
 
         return rootView;
@@ -158,10 +158,10 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     @Override
     public void onLoadFinished(Loader<List<JSONObject>> loader, List<JSONObject> data) {
         switch (loader.getId()) {
-            case 1:
+            case 2:
                 jsonObjectReviews = data;
                 break;
-            case 2:
+            case 3:
                 jsonObjectTrailers = data;
                 break;
         }

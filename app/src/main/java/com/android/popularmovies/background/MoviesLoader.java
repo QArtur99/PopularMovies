@@ -21,7 +21,7 @@ import java.util.List;
  * Created by ART_F on 2017-06-28.
  */
 
-public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
+public class MoviesLoader extends AsyncTaskLoader<Object> {
     private List<Movie> list;
     private String sortBy;
     private String pageNo;
@@ -35,7 +35,7 @@ public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
     }
 
     @Override
-    public List<Movie> loadInBackground() {
+    public Object loadInBackground() {
         list = new ArrayList<>();
 
         try {
@@ -43,8 +43,8 @@ public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
-
-        return list;
+        Object object = list;
+        return object;
     }
 
     private void loadMovies() throws IOException, JSONException {
@@ -76,7 +76,7 @@ public class MoviesLoader extends AsyncTaskLoader<List<Movie>> {
         int bookAmount = jsonArray.length();
         for (int i = 0; bookAmount > i; i++) {
             JSONObject jsonBookData = jsonArray.getJSONObject(i);
-                list.add(new Movie(jsonBookData));
+            list.add(new Movie(jsonBookData));
         }
     }
 }

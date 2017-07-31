@@ -3,6 +3,7 @@ package com.android.popularmovies;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
@@ -24,7 +26,9 @@ import android.view.ViewGroup;
 import com.android.popularmovies.adapter.Movie;
 import com.android.popularmovies.adapter.MyAdapter;
 import com.android.popularmovies.background.MoviesLoader;
+import com.android.popularmovies.database.DatabaseContract;
 import com.android.popularmovies.databinding.FragmentGridViewBinding;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +38,11 @@ import java.util.List;
  */
 
 public class GridViewFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener,
-        MyAdapter.ListItemClickListener, LoaderManager.LoaderCallbacks<List<Movie>>, View.OnTouchListener {
+        MyAdapter.ListItemClickListener, LoaderManager.LoaderCallbacks, View.OnTouchListener {
 
     FragmentGridViewBinding binding;
+    int aaa = 0;
+    Cursor cursor;
     private int pageNoInteger = 1;
     private View rootView;
     private OnImageClickListener mCallback;
@@ -53,9 +59,13 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         setHasOptionsMenu(true);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_grid_view, container, false);
         rootView = binding.getRoot();
+        if (aaa > 0) {
+            return rootView;
+        }
 
         binding.emptyView.setVisibility(View.GONE);
         binding.loadingIndicator.setVisibility(View.GONE);
+
 
         int columns = setupSharedPreferences();
         setAdapter(columns, new ArrayList<Movie>());
@@ -65,11 +75,17 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
             getActivity().getSupportLoaderManager().initLoader(0, null, this).forceLoad();
         } else if (checkConnection()) {
             binding.recyclerView.setOnTouchListener(this);
-            getActivity().getSupportLoaderManager().initLoader(0, null, this).forceLoad();
+            getActivity().getSupportLoaderManager().initLoader(1, null, this).forceLoad();
         } else {
             setInfoNoConnection();
         }
+        aaa++;
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -105,7 +121,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
                 ((MainActivity) getActivity()).addFavorite(null);
                 break;
             case R.id.action_refresh:
-                restartLoader();
+                restartLoader(1);
                 break;
             case R.id.action_sortBy:
                 openBottomDialog();
@@ -136,7 +152,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
             if (lastView != null && lastView.isShown() || firstView != null && firstView.isShown()) {
                 if (checkConnection()) {
                     pageNoInteger = (moviesAdapter.getItemCount() / 20) + 1;
-                    getActivity().getSupportLoaderManager().restartLoader(0, null, this).forceLoad();
+                    getActivity().getSupportLoaderManager().restartLoader(1, null, this).forceLoad();
                 } else {
                     setInfoNoConnection();
                 }
@@ -152,12 +168,35 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     }
 
     @Override
-    public Loader<List<Movie>> onCreateLoader(int id, Bundle args) {
-        return new MoviesLoader(getContext(), sortBy, String.valueOf(pageNoInteger));
+    public Loader onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case 0:
+                return new CursorLoader(getContext(), DatabaseContract.Movies.CONTENT_URI, DatabaseContract.Movies.PROJECTION_LIST, null, null, null);
+            case 1:
+                return new MoviesLoader(getContext(), sortBy, String.valueOf(pageNoInteger));
+        }
+        return null;
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Movie>> loader, final List<Movie> data) {
+    public void onLoadFinished(Loader loader, final Object object) {
+        List<Movie> temp = new ArrayList<>();
+        switch (loader.getId()) {
+            case 0:
+                cursor = (Cursor) object;
+                if (cursor != null && cursor.moveToFirst()) {
+                    do {
+                        Movie movie = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(DatabaseContract.Movies.MOVIE)), Movie.class);
+                        temp.add(movie);
+                    } while (cursor.moveToNext());
+                }
+                break;
+            case 1:
+                temp = (List<Movie>) object;
+                break;
+        }
+
+        final List<Movie> data = temp;
         binding.loadingIndicator.setVisibility(View.GONE);
         if (pageNoInteger == 1) {
             if (moviesAdapter != null) {
@@ -183,7 +222,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Movie>> loader) {
+    public void onLoaderReset(Loader loader) {
         moviesAdapter.setMovies(new ArrayList<Movie>());
     }
 
@@ -197,18 +236,25 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
             sortBy = sharedPreferences.getString(key, getString(R.string.pref_sort_by_most_popular_default));
             if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
                 binding.recyclerView.setOnTouchListener(null);
-                restartLoader();
+                restartLoader(0);
             } else {
                 binding.recyclerView.setOnTouchListener(this);
-                restartLoader();
+                restartLoader(1);
             }
         }
     }
 
-    private void restartLoader() {
+    private void restartLoader(int id) {
         if (checkConnection()) {
             moviesAdapter.clearMovies();
-            getActivity().getSupportLoaderManager().restartLoader(0, null, this).forceLoad();
+            switch (id) {
+                case 0:
+                    getActivity().getSupportLoaderManager().restartLoader(0, null, this).forceLoad();
+                    break;
+                case 1:
+                    getActivity().getSupportLoaderManager().restartLoader(0, null, this).forceLoad();
+                    break;
+            }
         } else {
             setInfoNoConnection();
         }
@@ -251,6 +297,9 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         super.onDestroyView();
         if (sharedPreferences != null) {
             sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        }
+        if (cursor != null) {
+            cursor.close();
         }
     }
 
