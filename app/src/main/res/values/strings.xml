@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PopularMovies</string>
+    <string name="app_name">Popular Movies</string>
     <string name="no_movies">No movies found</string>
 
     //Main activity problem
@@ -7,6 +7,8 @@
     <string name="no_connection_sub_text">Please fix your internet connection</string>
     <string name="server_problem">Server not responding</string>
     <string name="server_problem_sub_text">We will fix it as soon as possible</string>
+    <string name="no_favorite">List of favorite movies is empty </string>
+    <string name="no_favorite_sub_text">Please add your favorite movies to the list</string>
 
 
 

@@ -43,7 +43,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.row_movie_item, parent, false);
         RelativeLayout relativeLayout = view.findViewById(R.id.gridView);
-//        setViewSize(parent.getContext(), relativeLayout);
+        setViewSize(parent.getContext(), relativeLayout);
         return new MyViewHolder(view);
     }
 
@@ -110,8 +110,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         public void bind(int position) {
             Movie movie = (Movie) getDataAtPosition(position);
             String posterURL = "http://image.tmdb.org/t/p/w185/" + movie.poster_path;
-//            Picasso.with(poster.getContext()).load(posterURL).into(poster);
-//            Glide.with(poster.getContext()).load(posterURL).into(poster);
+            Picasso.with(poster.getContext()).load(posterURL).into(poster);
             movieTitle.setText(movie.original_title);
         }
 

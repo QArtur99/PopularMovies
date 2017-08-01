@@ -1,27 +1,37 @@
 package com.android.popularmovies;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.android.popularmovies.adapter.Movie;
+import com.android.popularmovies.background.MoviesLoader;
+import com.android.popularmovies.database.DatabaseContract;
 import com.google.gson.Gson;
 
-public class MainActivity extends AppCompatActivity implements GridViewFragment.OnImageClickListener {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements GridViewFragment.OnImageClickListener, LoaderManager.LoaderCallbacks {
 
     private MovieDetailFragment movieDetailFragment;
+    private GridViewFragment headFragment;
+    private Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         FragmentManager fragmentManager = getSupportFragmentManager();
-        GridViewFragment headFragment = new GridViewFragment();
+        headFragment = new GridViewFragment();
         fragmentManager.beginTransaction()
                 .add(R.id.gridViewMain, headFragment)
                 .commit();
@@ -71,4 +81,49 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
     public void addFavorite(View view) {
         movieDetailFragment.addFavorite();
     }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        switch (id) {
+            case 0:
+                return new CursorLoader(this, DatabaseContract.Movies.CONTENT_URI, DatabaseContract.Movies.PROJECTION_LIST, null, null, null);
+            case 1:
+                return new MoviesLoader(this, headFragment.getSortBy(), String.valueOf(headFragment.getPageNo()));
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, final Object object) {
+        List<Movie> temp = new ArrayList<>();
+        switch (loader.getId()) {
+            case 0:
+                cursor = (Cursor) object;
+                if (cursor != null && cursor.moveToFirst()) {
+                    do {
+                        Movie movie = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(DatabaseContract.Movies.MOVIE)), Movie.class);
+                        temp.add(movie);
+                    } while (cursor.moveToNext());
+                }
+                break;
+            case 1:
+                temp = (List<Movie>) object;
+                break;
+        }
+        headFragment.onLoadFinishSetData(temp);
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+        headFragment.onRestartLoader();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
+
 }
