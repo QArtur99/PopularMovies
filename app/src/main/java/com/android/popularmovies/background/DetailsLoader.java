@@ -15,7 +15,7 @@ import java.util.List;
  * Created by ART_F on 2017-07-12.
  */
 
-public class DetailsLoader extends AsyncTaskLoader<List<JSONObject>> {
+public class DetailsLoader extends AsyncTaskLoader<Object> {
     private int loaderId;
     private List<JSONObject> jsonObjectList;
     private String movieId;
@@ -27,7 +27,7 @@ public class DetailsLoader extends AsyncTaskLoader<List<JSONObject>> {
     }
 
     @Override
-    public List<JSONObject> loadInBackground() {
+    public Object loadInBackground() {
 
         jsonObjectList = new ArrayList<>();
 
@@ -37,7 +37,8 @@ public class DetailsLoader extends AsyncTaskLoader<List<JSONObject>> {
             e.printStackTrace();
         }
 
-        return jsonObjectList;
+        Object object = jsonObjectList;
+        return object;
     }
 
     private void getData() throws JSONException, IOException {

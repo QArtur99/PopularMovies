@@ -41,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -52,7 +53,7 @@ import butterknife.ButterKnife;
 
 public class MovieDetailActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener
         , DetailsAdapter.ListItemClickListener
-        , LoaderManager.LoaderCallbacks<List<JSONObject>> {
+        , LoaderManager.LoaderCallbacks {
 
     @BindView(R.id.collapsingToolbar) CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.appBar) AppBarLayout appBar;
@@ -69,6 +70,7 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
     private List<JSONObject> jsonObjectTrailers, jsonObjectReviews;
     private Movie movie;
     private int dialogInfo;
+    private DetailsAdapter detailsAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -161,7 +163,6 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
     }
 
     private void setDetailDialog() {
-        DetailsAdapter detailsAdapter = null;
         final AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(R.layout.dialog_details)
                 .create();
@@ -189,25 +190,27 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
     }
 
     @Override
-    public Loader<List<JSONObject>> onCreateLoader(int id, Bundle args) {
+    public Loader onCreateLoader(int id, Bundle args) {
         return new DetailsLoader(MovieDetailActivity.this, id, movie.id);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<JSONObject>> loader, List<JSONObject> data) {
+    public void onLoadFinished(Loader loader, Object data) {
         switch (loader.getId()) {
             case 1:
-                jsonObjectReviews = data;
+                jsonObjectReviews = (List<JSONObject>) data;
                 break;
             case 2:
-                jsonObjectTrailers = data;
+                jsonObjectTrailers = (List<JSONObject>) data;
                 break;
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<JSONObject>> loader) {
-
+    public void onLoaderReset(Loader loader) {
+        if(detailsAdapter != null) {
+            detailsAdapter.setData(new ArrayList<JSONObject>());
+        }
     }
 
     @Override

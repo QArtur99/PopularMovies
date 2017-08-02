@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 
 import com.android.popularmovies.adapter.DetailsAdapter;
 import com.android.popularmovies.adapter.Movie;
-import com.android.popularmovies.background.DetailsLoader;
 import com.android.popularmovies.database.DatabaseContract;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -44,16 +42,16 @@ import butterknife.ButterKnife;
  * Created by ART_F on 2017-07-20.
  */
 
-public class MovieDetailFragment extends Fragment implements DetailsAdapter.ListItemClickListener
-        , LoaderManager.LoaderCallbacks<List<JSONObject>> {
+public class MovieDetailFragment extends Fragment implements DetailsAdapter.ListItemClickListener {
 
+    public Movie movie;
     @BindView(R.id.fabBottom) LinearLayout fabBottom;
     private TextView releaseDate, voteAverage, overview, movieTitle;
     private LinearLayout detailLayout;
-    private Movie movie;
     private List<JSONObject> jsonObjectTrailers, jsonObjectReviews;
     private int dialogInfo;
     private DetailsAdapter detailsAdapter;
+    private MainActivity mainActivity;
 
     public MovieDetailFragment() {
     }
@@ -61,6 +59,7 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mainActivity = ((MainActivity) getActivity());
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
         if (movie != null) {
             ButterKnife.bind(getActivity(), rootView);
@@ -73,8 +72,8 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
             setTextBackground();
             setDetailData();
 
-            getActivity().getSupportLoaderManager().restartLoader(2, null, this).forceLoad();
-            getActivity().getSupportLoaderManager().restartLoader(3, null, this).forceLoad();
+            getActivity().getSupportLoaderManager().restartLoader(2, null, mainActivity).forceLoad();
+            getActivity().getSupportLoaderManager().restartLoader(3, null, mainActivity).forceLoad();
         }
 
         return rootView;
@@ -150,26 +149,22 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
         recyclerView.setAdapter(detailsAdapter);
     }
 
-    @Override
-    public Loader<List<JSONObject>> onCreateLoader(int id, Bundle args) {
-        return new DetailsLoader(getContext(), id, movie.id);
-    }
 
-    @Override
-    public void onLoadFinished(Loader<List<JSONObject>> loader, List<JSONObject> data) {
+    public void onLoadFinished(Loader loader, Object data) {
         switch (loader.getId()) {
             case 2:
-                jsonObjectReviews = data;
+                jsonObjectReviews = (List<JSONObject>) data;
                 break;
             case 3:
-                jsonObjectTrailers = data;
+                jsonObjectTrailers = (List<JSONObject>) data;
                 break;
         }
     }
 
-    @Override
-    public void onLoaderReset(Loader<List<JSONObject>> loader) {
-        detailsAdapter.setData(new ArrayList<JSONObject>());
+    public void onLoaderReset() {
+        if (detailsAdapter != null) {
+            detailsAdapter.setData(new ArrayList<JSONObject>());
+        }
     }
 
     @Override

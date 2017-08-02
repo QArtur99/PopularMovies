@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.PreferenceManager;
+
 import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -159,7 +160,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         mCallback.onImageSelected(movie);
     }
 
-    public void onLoadFinishSetData(List<Movie> temp) {
+    public void onLoadFinished(List<Movie> temp) {
         final List<Movie> data = temp;
         binding.loadingIndicator.setVisibility(View.GONE);
         if (pageNoInteger == 1) {
@@ -183,7 +184,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
             if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
                 binding.emptyTitleText.setText(getString(R.string.no_favorite));
                 binding.emptySubtitleText.setText(getString(R.string.no_favorite_sub_text));
-            }else {
+            } else {
                 binding.emptyTitleText.setText(getString(R.string.server_problem));
                 binding.emptySubtitleText.setText(getString(R.string.server_problem_sub_text));
             }
@@ -245,7 +246,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         return columns;
     }
 
-    public void setAdapter(int columns, List<Movie> movieList) {
+    public void setAdapter(final int columns, List<Movie> movieList) {
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), columns);
         layoutManager.setSpanCount(columns);
         binding.recyclerView.setLayoutManager(layoutManager);

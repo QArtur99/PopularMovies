@@ -26,7 +26,6 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter<MyBaseAdapter.M
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         RowMovieItemBinding binding = DataBindingUtil.inflate(layoutInflater, getLayoutIdForType(viewType), parent, false);
-        ((SimpleItemAnimator) ((RecyclerView)parent).getItemAnimator()).setSupportsChangeAnimations(false);
         setViewSize(parent.getContext(), binding.gridView);
         return new MyViewHolder(binding);
     }
@@ -51,6 +50,7 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter<MyBaseAdapter.M
         display.getRealSize(size);
         int width = size.x;
         int widthDp = (int) (width / Resources.getSystem().getDisplayMetrics().density);
+
         GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) relativeLayout.getLayoutParams();
 
         if(context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
