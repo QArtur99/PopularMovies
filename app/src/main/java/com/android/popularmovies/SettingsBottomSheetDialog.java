@@ -10,10 +10,6 @@ import android.view.View;
 import android.widget.TextView;
 
 
-/**
- * Created by ART_F on 2017-07-03.
- */
-
 public class SettingsBottomSheetDialog extends BottomSheetDialog implements View.OnClickListener {
     private Context context;
     private SharedPreferences sharedPreferences;

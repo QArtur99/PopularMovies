@@ -12,9 +12,6 @@ import android.util.Log;
 
 import com.android.popularmovies.database.DatabaseContract.Movies;
 
-/**
- * Created by ART_F on 2017-06-05.
- */
 
 public class DatabaseProvider extends ContentProvider {
 

@@ -52,4 +52,9 @@
     <string name="editor_delete_product_failed">Error with removing movie</string>
 
 
+
+    //Test
+    <string name="middle">This is the middle!</string>
+
+
 </resources>

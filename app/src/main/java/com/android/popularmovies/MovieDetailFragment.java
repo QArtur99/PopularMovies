@@ -38,9 +38,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by ART_F on 2017-07-20.
- */
 
 public class MovieDetailFragment extends Fragment implements DetailsAdapter.ListItemClickListener {
 
@@ -51,7 +48,6 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     private List<JSONObject> jsonObjectTrailers, jsonObjectReviews;
     private int dialogInfo;
     private DetailsAdapter detailsAdapter;
-    private MainActivity mainActivity;
 
     public MovieDetailFragment() {
     }
@@ -59,7 +55,7 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mainActivity = ((MainActivity) getActivity());
+        MainActivity mainActivity = ((MainActivity) getActivity());
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
         if (movie != null) {
             ButterKnife.bind(getActivity(), rootView);

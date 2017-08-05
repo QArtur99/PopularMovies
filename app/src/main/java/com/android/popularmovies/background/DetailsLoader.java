@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by ART_F on 2017-07-12.
- */
 
 public class DetailsLoader extends AsyncTaskLoader<Object> {
     private int loaderId;

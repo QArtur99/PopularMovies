@@ -8,7 +8,6 @@ import android.databinding.ViewDataBinding;
 import android.graphics.Point;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,18 +19,18 @@ import com.android.popularmovies.BR;
 import com.android.popularmovies.databinding.RowMovieItemBinding;
 
 
-public abstract class MyBaseAdapter extends RecyclerView.Adapter<MyBaseAdapter.MyViewHolder> {
+public abstract class MyBaseAdapter extends RecyclerView.Adapter<MyBaseAdapter.ViewHolder> {
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         RowMovieItemBinding binding = DataBindingUtil.inflate(layoutInflater, getLayoutIdForType(viewType), parent, false);
         setViewSize(parent.getContext(), binding.gridView);
-        return new MyViewHolder(binding);
+        return new ViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         holder.bind(getDataAtPosition(position));
     }
 
@@ -66,10 +65,10 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter<MyBaseAdapter.M
         relativeLayout.setLayoutParams(layoutParams);
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ViewDataBinding binding;
 
-        public MyViewHolder(ViewDataBinding binding) {
+        public ViewHolder(ViewDataBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             binding.getRoot().setOnClickListener(this);
@@ -85,7 +84,6 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter<MyBaseAdapter.M
             int clickedPosition = getAdapterPosition();
             getListItemClickListener().onListItemClick(clickedPosition);
         }
-
     }
 
 }

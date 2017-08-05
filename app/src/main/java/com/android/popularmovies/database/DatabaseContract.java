@@ -4,9 +4,6 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-/**
- * Created by ART_F on 2017-06-05.
- */
 
 public final class DatabaseContract {
 

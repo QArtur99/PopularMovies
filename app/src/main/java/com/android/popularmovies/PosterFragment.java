@@ -10,9 +10,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-/**
- * Created by ART_F on 2017-07-20.
- */
+
 
 public class PosterFragment extends Fragment {
 

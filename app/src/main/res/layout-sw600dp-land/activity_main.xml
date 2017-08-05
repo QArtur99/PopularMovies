@@ -10,7 +10,7 @@
 
 
     <FrameLayout
-        android:id="@+id/gridViewMain"
+        android:id="@+id/gridViewFrame"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

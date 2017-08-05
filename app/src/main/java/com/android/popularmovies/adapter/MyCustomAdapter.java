@@ -6,9 +6,6 @@ import android.widget.ImageView;
 import com.android.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
-/**
- * Created by ART_F on 2017-06-29.
- */
 
 public class MyCustomAdapter {
     @BindingAdapter("bind:imageUrl")

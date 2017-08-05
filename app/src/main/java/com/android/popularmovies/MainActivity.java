@@ -3,6 +3,11 @@ package com.android.popularmovies;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -11,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.android.popularmovies.SimpleIdlingResource.SimpleIdlingResource;
 import com.android.popularmovies.adapter.Movie;
 import com.android.popularmovies.background.DetailsLoader;
 import com.android.popularmovies.background.MoviesLoader;
@@ -23,8 +29,24 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements GridViewFragment.OnImageClickListener, LoaderManager.LoaderCallbacks {
 
     private MovieDetailFragment movieDetailFragment;
-    private GridViewFragment headFragment;
+    public GridViewFragment headFragment;
     private Cursor cursor;
+
+
+    @Nullable
+    private SimpleIdlingResource mIdlingResource;
+
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
         FragmentManager fragmentManager = getSupportFragmentManager();
         headFragment = new GridViewFragment();
         fragmentManager.beginTransaction()
-                .add(R.id.gridViewMain, headFragment)
+                .add(R.id.gridViewFrame, headFragment)
                 .commit();
 
         if (findViewById(R.id.detailsViewFrame) == null) {
@@ -100,6 +122,10 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
 
     @Override
     public void onLoadFinished(Loader loader, final Object object) {
+        if (mIdlingResource != null) {
+            mIdlingResource.setIdleState(false);
+        }
+
         List<Movie> temp = new ArrayList<>();
         switch (loader.getId()) {
             case 0:
@@ -124,7 +150,16 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
                 break;
         }
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mIdlingResource != null) {
+                    mIdlingResource.setIdleState(true);
+                }
+            }
+        }, 2000);
     }
+
 
     @Override
     public void onLoaderReset(Loader loader) {

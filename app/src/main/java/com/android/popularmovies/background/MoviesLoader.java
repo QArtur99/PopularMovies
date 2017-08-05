@@ -1,12 +1,9 @@
 package com.android.popularmovies.background;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.android.popularmovies.adapter.Movie;
-import com.android.popularmovies.database.DatabaseContract.Movies;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,9 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by ART_F on 2017-06-28.
- */
 
 public class MoviesLoader extends AsyncTaskLoader<Object> {
     private List<Movie> list;

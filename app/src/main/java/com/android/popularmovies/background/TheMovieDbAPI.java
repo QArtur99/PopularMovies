@@ -14,9 +14,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Set;
 
-/**
- * Created by ART_F on 2017-06-29.
- */
 
 public class TheMovieDbAPI {
     public static final String POPULAR = "popular";

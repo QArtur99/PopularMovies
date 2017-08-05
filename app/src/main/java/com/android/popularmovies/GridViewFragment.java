@@ -27,9 +27,6 @@ import com.android.popularmovies.databinding.FragmentGridViewBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by ART_F on 2017-07-19.
- */
 
 public class GridViewFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener,
         MyAdapter.ListItemClickListener, View.OnTouchListener {
@@ -39,7 +36,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     private int pageNoInteger = 1;
     private View rootView;
     private OnImageClickListener mCallback;
-    private MyAdapter moviesAdapter;
+    public MyAdapter moviesAdapter;
     private SharedPreferences sharedPreferences;
     private String sortBy;
     private int loaderId;

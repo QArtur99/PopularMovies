@@ -8,9 +8,6 @@ import com.android.popularmovies.BR;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by ART_F on 2017-06-29.
- */
 
 public class Movie extends BaseObservable {
     public String vote_count;
