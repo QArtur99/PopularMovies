@@ -157,8 +157,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         mCallback.onImageSelected(movie);
     }
 
-    public void onLoadFinished(List<Movie> temp) {
-        final List<Movie> data = temp;
+    public void onLoadFinished(final List<Movie>  data) {
         binding.loadingIndicator.setVisibility(View.GONE);
         if (pageNoInteger == 1) {
             if (moviesAdapter != null) {

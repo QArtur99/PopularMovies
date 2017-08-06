@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
@@ -130,9 +131,11 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
     }
 
     private void setTextBackground() {
-        LayerDrawable cellLayerDrawable = (LayerDrawable) detailLayout.getBackground();
-        Drawable drawable = toolbarImage.getDrawable();
-        cellLayerDrawable.setDrawableByLayerId(R.id.backgroundBitmap, drawable);
+        Drawable[] layers = new Drawable[2];
+        layers[0] = toolbarImage.getDrawable();
+        layers[1] = ContextCompat.getDrawable(this, R.drawable.background_transparent);
+        LayerDrawable layerDrawable = new LayerDrawable(layers);
+        detailLayout.setBackground(layerDrawable);
     }
 
     public void setPosterSize() {
@@ -208,7 +211,7 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
 
     @Override
     public void onLoaderReset(Loader loader) {
-        if(detailsAdapter != null) {
+        if (detailsAdapter != null) {
             detailsAdapter.setData(new ArrayList<JSONObject>());
         }
     }

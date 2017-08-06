@@ -79,6 +79,12 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
     }
 
     private void loadDetails(Movie movie) {
+
+//        String posterURL = "http://image.tmdb.org/t/p/w500/" + movie.poster_path;
+//        ImageView imageView = new ImageView(this);
+//        Picasso.with(this).load(posterURL).into(imageView);
+
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         PosterFragment posterFragment = new PosterFragment();
         posterFragment.setPoster(movie.poster_path);

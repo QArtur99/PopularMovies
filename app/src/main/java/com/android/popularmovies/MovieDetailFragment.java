@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
@@ -35,14 +36,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 
 public class MovieDetailFragment extends Fragment implements DetailsAdapter.ListItemClickListener {
 
     public Movie movie;
-    @BindView(R.id.fabBottom) LinearLayout fabBottom;
     private TextView releaseDate, voteAverage, overview, movieTitle;
     private LinearLayout detailLayout;
     private List<JSONObject> jsonObjectTrailers, jsonObjectReviews;
@@ -55,11 +52,9 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        MainActivity mainActivity = ((MainActivity) getActivity());
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
         if (movie != null) {
-            ButterKnife.bind(getActivity(), rootView);
-            movieTitle = rootView.findViewById(R.id.movieTitleDetail);
+             movieTitle = rootView.findViewById(R.id.movieTitleDetail);
             overview = rootView.findViewById(R.id.overview);
             voteAverage = rootView.findViewById(R.id.voteAverage);
             releaseDate = rootView.findViewById(R.id.releaseDate);
@@ -68,6 +63,7 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
             setTextBackground();
             setDetailData();
 
+            MainActivity mainActivity = ((MainActivity) getActivity());
             getActivity().getSupportLoaderManager().restartLoader(2, null, mainActivity).forceLoad();
             getActivity().getSupportLoaderManager().restartLoader(3, null, mainActivity).forceLoad();
         }
@@ -94,9 +90,11 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
             ImageView imageView = new ImageView(getContext());
             Picasso.with(getContext()).load(posterURL).into(imageView);
 
-            LayerDrawable cellLayerDrawable = (LayerDrawable) detailLayout.getBackground();
-            Drawable drawable = imageView.getDrawable();
-            cellLayerDrawable.setDrawableByLayerId(R.id.backgroundBitmap, drawable);
+            Drawable[] layers = new Drawable[2];
+            layers[0] = imageView.getDrawable();
+            layers[1] = ContextCompat.getDrawable(getActivity(), R.drawable.background_transparent);
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
+            detailLayout.setBackground(layerDrawable);
         }
     }
 
