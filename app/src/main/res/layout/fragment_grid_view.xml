@@ -37,6 +37,7 @@
                 android:layout_centerHorizontal="true"
                 android:fontFamily="sans-serif-medium"
                 android:paddingTop="16dp"
+                android:gravity="center"
                 android:textAppearance="?android:textAppearanceMedium"/>
 
             <TextView
@@ -47,6 +48,7 @@
                 android:layout_centerHorizontal="true"
                 android:fontFamily="sans-serif"
                 android:paddingTop="8dp"
+                android:gravity="center"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="#A2AAB0"/>
         </RelativeLayout>

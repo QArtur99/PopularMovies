@@ -10,18 +10,11 @@
     <include
         layout="@layout/tool_bar"/>
 
-    <!--<fragment-->
-        <!--android:id="@+id/master_list_fragment"-->
-        <!--android:name="com.android.popularmovies.GridViewFragment"-->
-        <!--android:layout_width="match_parent"-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
-        <!--android:layout_height="match_parent"/>-->
-
     <FrameLayout
         android:id="@+id/gridViewFrame"
-        android:layout_weight="1"
         android:layout_width="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

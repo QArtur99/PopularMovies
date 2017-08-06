@@ -129,14 +129,16 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
         List<Movie> temp = new ArrayList<>();
         switch (loader.getId()) {
             case 0:
-                cursor = (Cursor) object;
-                if (cursor != null && !cursor.isClosed() && cursor.moveToFirst()) {
-                    do {
-                        Movie movie = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(DatabaseContract.Movies.MOVIE)), Movie.class);
-                        temp.add(movie);
-                    } while (cursor.moveToNext());
+                if (headFragment.getSortBy().equals(getString(R.string.pref_sort_by_favorite))) {
+                    cursor = (Cursor) object;
+                    if (cursor != null && !cursor.isClosed() && cursor.moveToFirst()) {
+                        do {
+                            Movie movie = new Gson().fromJson(cursor.getString(cursor.getColumnIndex(DatabaseContract.Movies.MOVIE)), Movie.class);
+                            temp.add(movie);
+                        } while (cursor.moveToNext());
+                    }
+                    headFragment.onLoadFinished(temp);
                 }
-                headFragment.onLoadFinished(temp);
                 break;
             case 1:
                 temp = (List<Movie>) object;

@@ -53,7 +53,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         rootView = binding.getRoot();
 
         binding.emptyView.setVisibility(View.GONE);
-        binding.loadingIndicator.setVisibility(View.GONE);
+        binding.loadingIndicator.setVisibility(View.VISIBLE);
 
 
         int columns = setupSharedPreferences();

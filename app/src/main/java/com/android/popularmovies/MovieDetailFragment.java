@@ -105,7 +105,7 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
             Toast.makeText(getContext(), "This movie doesn't have any review", Toast.LENGTH_SHORT).show();
             return;
         }
-        dialogInfo = 1;
+        dialogInfo = 2;
         setDetailDialog();
     }
 
@@ -114,7 +114,7 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
             Toast.makeText(getContext(), "This movie doesn't have any trailer", Toast.LENGTH_SHORT).show();
             return;
         }
-        dialogInfo = 2;
+        dialogInfo = 3;
         setDetailDialog();
     }
 
@@ -133,11 +133,11 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         switch (dialogInfo) {
-            case 1:
+            case 2:
                 dialogTitle.setText("Reviews");
                 detailsAdapter = new DetailsAdapter(jsonObjectReviews, this, dialogInfo);
                 break;
-            case 2:
+            case 3:
                 dialogTitle.setText("Trailers");
                 detailsAdapter = new DetailsAdapter(jsonObjectTrailers, this, dialogInfo);
                 break;
@@ -167,7 +167,7 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     public void onListItemClick(int clickedItemIndex) {
         JSONObject jsonObject;
         switch (dialogInfo) {
-            case 1:
+            case 2:
                 jsonObject = jsonObjectReviews.get(clickedItemIndex);
                 try {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(jsonObject.getString("url"))));
@@ -175,7 +175,7 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
                     e.printStackTrace();
                 }
                 break;
-            case 2:
+            case 3:
                 jsonObject = jsonObjectTrailers.get(clickedItemIndex);
                 try {
                     String youTubeBase = "https://www.youtube.com/watch?v=";

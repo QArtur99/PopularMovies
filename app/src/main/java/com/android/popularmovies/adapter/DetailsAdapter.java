@@ -35,9 +35,9 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         View view = null;
-        if (loaderId == 1) {
+        if (loaderId == 2) {
             view = inflater.inflate(R.layout.row_detail_review, viewGroup, false);
-        } else if (loaderId == 2) {
+        } else if (loaderId == 3) {
             view = inflater.inflate(R.layout.row_detail_trailer, viewGroup, false);
         }
         return new ViewHolder(view);
@@ -74,7 +74,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
         void bind(int listIndex) {
             JSONObject jsonObject = data.get(listIndex);
             switch (loaderId) {
-                case 1:
+                case 2:
                     try {
                         detailAuthor.setText(jsonObject.getString("author"));
                         detailContent.setText(jsonObject.getString("content"));
@@ -82,7 +82,7 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
                         e.printStackTrace();
                     }
                     break;
-                case 2:
+                case 3:
                     try {
                         detailAuthor.setText(jsonObject.getString("name"));
                     } catch (JSONException e) {

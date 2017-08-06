@@ -42,10 +42,10 @@ public class DetailsLoader extends AsyncTaskLoader<Object> {
         String jsonString = "";
 
         switch (loaderId) {
-            case 1:
+            case 2:
                 jsonString = TheMovieDbAPI.getMovieReviews(movieId);
                 break;
-            case 2:
+            case 3:
                 jsonString = TheMovieDbAPI.getMovieTrailers(movieId);
                 break;
         }
@@ -55,9 +55,9 @@ public class DetailsLoader extends AsyncTaskLoader<Object> {
         int bookAmount = jsonArray.length();
         for (int i = 0; bookAmount > i; i++) {
             JSONObject jsonMovieData = jsonArray.getJSONObject(i);
-            if (loaderId == 1) {
+            if (loaderId == 2) {
                 jsonObjectList.add(jsonMovieData);
-            } else if (loaderId == 2) {
+            } else if (loaderId == 3) {
                 if (jsonMovieData.getString("type").equals("Trailer")) {
                     jsonObjectList.add(jsonMovieData);
                 }

@@ -94,8 +94,8 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
         setTextBackground();
         setDetailData();
 
-        getSupportLoaderManager().initLoader(1, null, this).forceLoad();
         getSupportLoaderManager().initLoader(2, null, this).forceLoad();
+        getSupportLoaderManager().initLoader(3, null, this).forceLoad();
     }
 
     private void setDetailData() {
@@ -149,7 +149,7 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
             Toast.makeText(this, "This movie doesn't have any review", Toast.LENGTH_SHORT).show();
             return;
         }
-        dialogInfo = 1;
+        dialogInfo = 2;
         setDetailDialog();
     }
 
@@ -158,7 +158,7 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
             Toast.makeText(this, "This movie doesn't have any trailer", Toast.LENGTH_SHORT).show();
             return;
         }
-        dialogInfo = 2;
+        dialogInfo = 3;
         setDetailDialog();
     }
 
@@ -177,11 +177,11 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         switch (dialogInfo) {
-            case 1:
+            case 2:
                 dialogTitle.setText("Reviews");
                 detailsAdapter = new DetailsAdapter(jsonObjectReviews, this, dialogInfo);
                 break;
-            case 2:
+            case 3:
                 dialogTitle.setText("Trailers");
                 detailsAdapter = new DetailsAdapter(jsonObjectTrailers, this, dialogInfo);
                 break;
