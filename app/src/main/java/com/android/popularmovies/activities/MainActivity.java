@@ -1,4 +1,4 @@
-package com.android.popularmovies;
+package com.android.popularmovies.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,11 +16,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.android.popularmovies.R;
 import com.android.popularmovies.SimpleIdlingResource.SimpleIdlingResource;
-import com.android.popularmovies.adapter.Movie;
-import com.android.popularmovies.background.DetailsLoader;
-import com.android.popularmovies.background.MoviesLoader;
+import com.android.popularmovies.adapters.Movie;
+import com.android.popularmovies.network.DetailsLoader;
+import com.android.popularmovies.network.MoviesLoader;
 import com.android.popularmovies.database.DatabaseContract;
+import com.android.popularmovies.fragments.GridViewFragment;
+import com.android.popularmovies.fragments.MovieDetailFragment;
+import com.android.popularmovies.fragments.PosterFragment;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -28,17 +32,13 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GridViewFragment.OnImageClickListener, LoaderManager.LoaderCallbacks {
 
-    private MovieDetailFragment movieDetailFragment;
     public GridViewFragment headFragment;
+    private MovieDetailFragment movieDetailFragment;
     private Cursor cursor;
-
 
     @Nullable
     private SimpleIdlingResource mIdlingResource;
 
-    /**
-     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
-     */
     @VisibleForTesting
     @NonNull
     public IdlingResource getIdlingResource() {
@@ -79,17 +79,11 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
     }
 
     private void loadDetails(Movie movie) {
-
-//        String posterURL = "http://image.tmdb.org/t/p/w500/" + movie.poster_path;
-//        ImageView imageView = new ImageView(this);
-//        Picasso.with(this).load(posterURL).into(imageView);
-
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         PosterFragment posterFragment = new PosterFragment();
         posterFragment.setPoster(movie.poster_path);
         fragmentManager.beginTransaction()
-                .add(R.id.posterViewFrame, posterFragment)
+                .add(R.id.posterViewFrame, posterFragment, "poster")
                 .commit();
 
         movieDetailFragment = new MovieDetailFragment();
@@ -97,14 +91,6 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
         fragmentManager.beginTransaction()
                 .add(R.id.detailsViewFrame, movieDetailFragment)
                 .commit();
-    }
-
-    public void showReviews(View view) {
-        movieDetailFragment.showReviews(view);
-    }
-
-    public void showTrailers(View view) {
-        movieDetailFragment.showTrailers(view);
     }
 
     public void addFavorite(View view) {
@@ -167,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
             }
         }, 2000);
     }
-
 
     @Override
     public void onLoaderReset(Loader loader) {

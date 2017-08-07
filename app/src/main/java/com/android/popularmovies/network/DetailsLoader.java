@@ -1,4 +1,4 @@
-package com.android.popularmovies.background;
+package com.android.popularmovies.network;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;

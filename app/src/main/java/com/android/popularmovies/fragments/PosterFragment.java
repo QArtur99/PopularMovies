@@ -1,4 +1,4 @@
-package com.android.popularmovies;
+package com.android.popularmovies.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.android.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
 
@@ -32,5 +33,4 @@ public class PosterFragment extends Fragment {
     public void setPoster(String url) {
         posterURL = "http://image.tmdb.org/t/p/w500/" + url;
     }
-
 }

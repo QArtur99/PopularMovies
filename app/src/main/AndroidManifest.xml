@@ -15,16 +15,16 @@
         android:largeHeap="true"
         android:hardwareAccelerated="true"
         android:fullBackupContent="false">
-        <activity android:name=".MainActivity" >
+        <activity android:name=".activities.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MovieDetailActivity"
+        <activity android:name=".activities.MovieDetailActivity"
                   android:label="MovieDetailActivity"
-                  android:parentActivityName=".MainActivity"/>
+                  android:parentActivityName=".activities.MainActivity"/>
         <provider
             android:name=".database.DatabaseProvider"
             android:authorities="com.android.popularmovies"

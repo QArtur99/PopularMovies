@@ -12,7 +12,8 @@ import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.popularmovies.adapter.MyAdapter;
+import com.android.popularmovies.activities.MainActivity;
+import com.android.popularmovies.adapters.MyAdapter;
 
 import org.hamcrest.Matcher;
 import org.junit.After;

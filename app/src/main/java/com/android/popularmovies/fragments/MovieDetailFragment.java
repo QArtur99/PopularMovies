@@ -1,13 +1,15 @@
-package com.android.popularmovies;
+package com.android.popularmovies.fragments;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -24,8 +26,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.popularmovies.adapter.DetailsAdapter;
-import com.android.popularmovies.adapter.Movie;
+import com.android.popularmovies.activities.MainActivity;
+import com.android.popularmovies.activities.MovieDetailActivity;
+import com.android.popularmovies.R;
+import com.android.popularmovies.adapters.DetailsAdapter;
+import com.android.popularmovies.adapters.Movie;
 import com.android.popularmovies.database.DatabaseContract;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -36,12 +41,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 public class MovieDetailFragment extends Fragment implements DetailsAdapter.ListItemClickListener {
 
     public Movie movie;
-    private TextView releaseDate, voteAverage, overview, movieTitle;
-    private LinearLayout detailLayout;
+    @BindView(R.id.movieTitleDetail) TextView movieTitle;
+    @BindView(R.id.overview) TextView overview;
+    @BindView(R.id.voteAverage) TextView voteAverage;
+    @BindView(R.id.releaseDate) TextView releaseDate;
+    @BindView(R.id.detail) LinearLayout detailLayout;
     private List<JSONObject> jsonObjectTrailers, jsonObjectReviews;
     private int dialogInfo;
     private DetailsAdapter detailsAdapter;
@@ -53,19 +65,22 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
+        ButterKnife.bind(this, rootView);
         if (movie != null) {
-             movieTitle = rootView.findViewById(R.id.movieTitleDetail);
-            overview = rootView.findViewById(R.id.overview);
-            voteAverage = rootView.findViewById(R.id.voteAverage);
-            releaseDate = rootView.findViewById(R.id.releaseDate);
-            detailLayout = rootView.findViewById(R.id.detail);
 
             setTextBackground();
             setDetailData();
 
-            MainActivity mainActivity = ((MainActivity) getActivity());
-            getActivity().getSupportLoaderManager().restartLoader(2, null, mainActivity).forceLoad();
-            getActivity().getSupportLoaderManager().restartLoader(3, null, mainActivity).forceLoad();
+            int orientation = getResources().getConfiguration().orientation;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                MainActivity mainActivity = ((MainActivity) getActivity());
+                getActivity().getSupportLoaderManager().restartLoader(2, null, mainActivity).forceLoad();
+                getActivity().getSupportLoaderManager().restartLoader(3, null, mainActivity).forceLoad();
+            } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                MovieDetailActivity mainActivity = ((MovieDetailActivity) getActivity());
+                getActivity().getSupportLoaderManager().restartLoader(2, null, mainActivity).forceLoad();
+                getActivity().getSupportLoaderManager().restartLoader(3, null, mainActivity).forceLoad();
+            }
         }
 
         return rootView;
@@ -87,18 +102,27 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     private void setTextBackground() {
         if (movie != null) {
             String posterURL = "http://image.tmdb.org/t/p/w500/" + movie.poster_path;
-            ImageView imageView = new ImageView(getContext());
+            final ImageView imageView = new ImageView(getActivity());
             Picasso.with(getContext()).load(posterURL).into(imageView);
 
-            Drawable[] layers = new Drawable[2];
-            layers[0] = imageView.getDrawable();
-            layers[1] = ContextCompat.getDrawable(getActivity(), R.drawable.background_transparent);
-            LayerDrawable layerDrawable = new LayerDrawable(layers);
-            detailLayout.setBackground(layerDrawable);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Drawable poster = imageView.getDrawable();
+                    if (poster != null) {
+                        Drawable[] layers = new Drawable[2];
+                        layers[0] = poster;
+                        layers[1] = ContextCompat.getDrawable(getActivity(), R.drawable.background_transparent);
+                        LayerDrawable layerDrawable = new LayerDrawable(layers);
+                        detailLayout.setBackground(layerDrawable);
+                    }
+                }
+            }, 100);
         }
     }
 
-    public void showReviews(View view) {
+    @OnClick(R.id.reviewsButton)
+    public void showReviews() {
         if (jsonObjectReviews.isEmpty()) {
             Toast.makeText(getContext(), "This movie doesn't have any review", Toast.LENGTH_SHORT).show();
             return;
@@ -107,7 +131,8 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
         setDetailDialog();
     }
 
-    public void showTrailers(View view) {
+    @OnClick(R.id.trailersButton)
+    public void showTrailers() {
         if (jsonObjectTrailers.isEmpty()) {
             Toast.makeText(getContext(), "This movie doesn't have any trailer", Toast.LENGTH_SHORT).show();
             return;
@@ -142,7 +167,6 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
         }
         recyclerView.setAdapter(detailsAdapter);
     }
-
 
     public void onLoadFinished(Loader loader, Object data) {
         switch (loader.getId()) {
@@ -228,4 +252,11 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
         }
     }
 
+    public void hideTitle() {
+        movieTitle.setVisibility(View.GONE);
+    }
+
+    public void showTitle() {
+        movieTitle.setVisibility(View.VISIBLE);
+    }
 }

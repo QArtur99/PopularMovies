@@ -1,4 +1,4 @@
-package com.android.popularmovies.adapter;
+package com.android.popularmovies.adapters;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -53,6 +53,11 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
         return data.size();
     }
 
+    public void setData(List<JSONObject> data) {
+        this.data.addAll(data);
+        notifyDataSetChanged();
+    }
+
     public interface ListItemClickListener {
         void onListItemClick(int clickedItemIndex);
     }
@@ -97,10 +102,5 @@ public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.ViewHold
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
         }
-    }
-
-    public void setData(List<JSONObject> data) {
-        this.data.addAll(data);
-        notifyDataSetChanged();
     }
 }

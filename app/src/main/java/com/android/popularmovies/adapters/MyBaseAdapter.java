@@ -1,4 +1,4 @@
-package com.android.popularmovies.adapter;
+package com.android.popularmovies.adapters;
 
 import android.content.Context;
 import android.content.res.Configuration;

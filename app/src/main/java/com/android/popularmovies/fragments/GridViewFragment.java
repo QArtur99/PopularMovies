@@ -1,4 +1,4 @@
-package com.android.popularmovies;
+package com.android.popularmovies.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,8 +20,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.popularmovies.adapter.Movie;
-import com.android.popularmovies.adapter.MyAdapter;
+import com.android.popularmovies.activities.MainActivity;
+import com.android.popularmovies.R;
+import com.android.popularmovies.SettingsBottomSheetDialog;
+import com.android.popularmovies.adapters.Movie;
+import com.android.popularmovies.adapters.MyAdapter;
 import com.android.popularmovies.databinding.FragmentGridViewBinding;
 
 import java.util.ArrayList;
@@ -244,7 +247,6 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
 
     public void setAdapter(final int columns, List<Movie> movieList) {
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), columns);
-        layoutManager.setSpanCount(columns);
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setHasFixedSize(true);
         moviesAdapter = new MyAdapter(movieList, this, columns);
@@ -258,7 +260,6 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
             sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         }
     }
-
 
     public int getPageNo() {
         return pageNoInteger;

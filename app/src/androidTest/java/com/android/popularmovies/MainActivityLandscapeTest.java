@@ -12,7 +12,11 @@ import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.popularmovies.adapter.MyAdapter;
+import com.android.popularmovies.activities.MainActivity;
+import com.android.popularmovies.adapters.MyAdapter;
+import com.android.popularmovies.fragments.GridViewFragment;
+import com.android.popularmovies.fragments.MovieDetailFragment;
+import com.android.popularmovies.fragments.PosterFragment;
 
 import org.hamcrest.Matcher;
 import org.junit.After;

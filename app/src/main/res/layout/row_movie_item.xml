@@ -6,7 +6,7 @@
 
         <variable
             name="obj"
-            type="com.android.popularmovies.adapter.Movie"/>
+            type="com.android.popularmovies.adapters.Movie"/>
     </data>
 
     <RelativeLayout

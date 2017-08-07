@@ -1,4 +1,4 @@
-package com.android.popularmovies.background;
+package com.android.popularmovies.network;
 
 import android.support.annotation.NonNull;
 
