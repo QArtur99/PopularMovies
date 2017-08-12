@@ -103,8 +103,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/shape_button_detail"
-        android:text="Reviews"
+        android:background="@drawable/ripple_button"
+        android:text="@string/reviews"
         android:textSize="16sp"
         android:textAllCaps="false"
         android:textColor="@color/shapeColor"/>
@@ -114,9 +114,10 @@
         android:layout_below="@+id/reviewsButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_button_detail"
-        android:text="Trailers"
+        android:background="@drawable/ripple_button"
+        android:text="@string/trailers"
         android:textSize="16sp"
+        android:layout_marginBottom="16dp"
         android:textAllCaps="false"
         android:textColor="@color/shapeColor"/>
 </RelativeLayout>

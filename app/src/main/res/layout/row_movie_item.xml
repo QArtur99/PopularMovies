@@ -20,6 +20,8 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:layout_gravity="center_horizontal"
+            android:background="@drawable/ripple"
+            android:foreground="?android:attr/selectableItemBackground"
             android:scaleType="fitXY"
             app:imageUrl="@{obj.poster_path}"/>
 

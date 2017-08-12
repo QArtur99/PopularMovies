@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:padding="16dp"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+              android:layout_height="wrap_content"
+              android:background="@drawable/ripple_list_item"
+              android:orientation="vertical"
+              android:padding="16dp">
 
     <TextView
         android:id="@+id/detailAuthor"
-        android:textStyle="bold"
-        android:textColor="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/detailContent"
-        android:lines="1"
-        android:ellipsize="end"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lines="1"/>
 
 </LinearLayout>
