@@ -1,11 +1,15 @@
 package com.android.popularmovies.activities;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -14,6 +18,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Display;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,28 +26,44 @@ import android.widget.LinearLayout;
 
 import com.android.popularmovies.R;
 import com.android.popularmovies.adapters.Movie;
-import com.android.popularmovies.network.DetailsLoader;
+import com.android.popularmovies.database.DatabaseContract;
 import com.android.popularmovies.fragments.MovieDetailFragment;
+import com.android.popularmovies.network.DetailsLoader;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MovieDetailActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener
         , LoaderManager.LoaderCallbacks {
 
-    @BindView(R.id.collapsingToolbar) CollapsingToolbarLayout collapsingToolbar;
-    @BindView(R.id.appBar) AppBarLayout appBar;
-    @BindView(R.id.toolbarImage) ImageView toolbarImage;
+    @Nullable
+    @BindView(R.id.collapsingToolbar)
+    CollapsingToolbarLayout collapsingToolbar;
+    @Nullable
+    @BindView(R.id.appBar)
+    AppBarLayout appBar;
+    @Nullable
+    @BindView(R.id.toolbarImage)
+    ImageView toolbarImage;
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.nestedScrollView) NestedScrollView nestedScrollView;
-    @BindView(R.id.fab) LinearLayout fab;
-    @BindView(R.id.fabBottom) LinearLayout fabBottom;
+    @Nullable
+    @BindView(R.id.nestedScrollView)
+    NestedScrollView nestedScrollView;
 
+    @Nullable
+    @BindView(R.id.fabTopBackground)
+    LinearLayout fabTopBackground;
+    @Nullable
+    @BindView(R.id.fabTop)
+    FloatingActionButton fabTop;
+
+    @BindView(R.id.fabBottomBackground) LinearLayout fabBottomBackground;
+    @BindView(R.id.fabBottom) FloatingActionButton fabBottom;
     private Movie movie;
     private MovieDetailFragment movieDetailFragment;
+    private boolean isFavorite;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,7 +82,10 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         movie = new Gson().fromJson(getIntent().getStringExtra("movie"), Movie.class);
-        appBar.addOnOffsetChangedListener(this);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            appBar.addOnOffsetChangedListener(this);
+        }
 
         setPosterSize();
         setPoster();
@@ -72,6 +96,61 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
         fragmentManager.beginTransaction()
                 .add(R.id.detailsViewFrame, movieDetailFragment)
                 .commit();
+
+        isFavorite();
+
+    }
+
+    private void isFavorite() {
+        String selection = DatabaseContract.Movies.MOVIE_ID + "=?";
+        String[] selectionArgs = new String[]{movie.id};
+        Cursor cursor = getContentResolver().query(DatabaseContract.Movies.CONTENT_URI, DatabaseContract.Movies.PROJECTION_LIST,
+                selection, selectionArgs, null);
+
+        if (cursor != null && cursor.getCount() == 0) {
+            isFavorite = false;
+        } else {
+            isFavorite = true;
+        }
+
+        setFabIcon();
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
+
+    private void setFabIcon() {
+        if (isFavorite) {
+            fabTop.setImageResource(R.drawable.ic_favorite);
+            fabBottom.setImageResource(R.drawable.ic_favorite);
+        } else {
+            fabTop.setImageResource(R.drawable.ic_favorite_border);
+            fabBottom.setImageResource(R.drawable.ic_favorite_border);
+        }
+    }
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        final int startScrollPos = getResources().getDimensionPixelSize(R.dimen.init_scroll_distance);
+        Animator animator = ObjectAnimator.ofInt(
+                nestedScrollView,
+                "scrollY",
+                startScrollPos).setDuration(300);
+        animator.start();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 
     @Override
@@ -80,13 +159,13 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
         if (percentage > 0.8) {
             collapsingToolbar.setTitle(movie.original_title);
             movieDetailFragment.hideTitle();
-            fab.setVisibility(View.GONE);
-            fabBottom.setVisibility(View.VISIBLE);
+            fabTopBackground.setVisibility(View.GONE);
+            fabBottomBackground.setVisibility(View.VISIBLE);
         } else {
             collapsingToolbar.setTitle("");
             movieDetailFragment.showTitle();
-            fab.setVisibility(View.VISIBLE);
-            fabBottom.setVisibility(View.GONE);
+            fabTopBackground.setVisibility(View.VISIBLE);
+            fabBottomBackground.setVisibility(View.GONE);
         }
     }
 
@@ -126,8 +205,9 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
         movieDetailFragment.onLoaderReset();
     }
 
-    @OnClick(R.id.fab)
     public void addFavorite(View view) {
+        isFavorite = !isFavorite;
+        setFabIcon();
         movieDetailFragment.addFavorite();
     }
 }

@@ -61,7 +61,8 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="128dp"
-            android:background="@drawable/shape_progress_bar"/>
+            android:background="@drawable/shape_progress_bar"
+            android:elevation="8dp"/>
 
     </RelativeLayout>
 </layout>

@@ -1,5 +1,7 @@
 package com.android.popularmovies.adapters;
 
+import android.view.View;
+
 import com.android.popularmovies.R;
 
 import java.util.List;
@@ -55,7 +57,7 @@ public class MyAdapter extends MyBaseAdapter {
     }
 
     public interface ListItemClickListener {
-        void onListItemClick(int clickedItemIndex);
+        void onListItemClick(int clickedItemIndex, View view);
     }
 
 }

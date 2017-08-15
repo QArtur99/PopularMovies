@@ -82,8 +82,7 @@ public abstract class MyBaseAdapter extends RecyclerView.Adapter<MyBaseAdapter.V
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
-            getListItemClickListener().onListItemClick(clickedPosition);
+            getListItemClickListener().onListItemClick(clickedPosition, v);
         }
     }
-
 }

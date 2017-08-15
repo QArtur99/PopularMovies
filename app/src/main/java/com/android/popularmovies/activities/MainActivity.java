@@ -1,5 +1,6 @@
 package com.android.popularmovies.activities;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,16 +16,17 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.android.popularmovies.R;
 import com.android.popularmovies.SimpleIdlingResource.SimpleIdlingResource;
 import com.android.popularmovies.adapters.Movie;
-import com.android.popularmovies.network.DetailsLoader;
-import com.android.popularmovies.network.MoviesLoader;
 import com.android.popularmovies.database.DatabaseContract;
 import com.android.popularmovies.fragments.GridViewFragment;
 import com.android.popularmovies.fragments.MovieDetailFragment;
 import com.android.popularmovies.fragments.PosterFragment;
+import com.android.popularmovies.network.DetailsLoader;
+import com.android.popularmovies.network.MoviesLoader;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
 
     public GridViewFragment headFragment;
     private MovieDetailFragment movieDetailFragment;
+    private PosterFragment posterFragment;
     private Cursor cursor;
 
     @Nullable
@@ -67,30 +70,42 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
     }
 
     @Override
-    public void onImageSelected(Movie movie) {
+    public void onImageSelected(Movie movie, View view) {
         if (findViewById(R.id.detailsViewFrame) == null) {
             String jsonString = new Gson().toJson(movie);
             Intent intent = new Intent(MainActivity.this, MovieDetailActivity.class);
             intent.putExtra("movie", jsonString);
-            startActivity(intent);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                ImageView imageView = view.findViewById(R.id.itemImage);
+                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this, imageView, imageView.getTransitionName()).toBundle();
+                startActivity(intent, bundle);
+            } else {
+                startActivity(intent);
+            }
         } else {
             loadDetails(movie);
         }
     }
 
     private void loadDetails(Movie movie) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        PosterFragment posterFragment = new PosterFragment();
-        posterFragment.setPoster(movie.poster_path);
-        fragmentManager.beginTransaction()
-                .add(R.id.posterViewFrame, posterFragment, "poster")
-                .commit();
+        if (movieDetailFragment == null && posterFragment == null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            posterFragment = new PosterFragment();
+            posterFragment.setPoster(movie.poster_path);
+            fragmentManager.beginTransaction()
+                    .add(R.id.posterViewFrame, posterFragment, "poster")
+                    .commit();
 
-        movieDetailFragment = new MovieDetailFragment();
-        movieDetailFragment.setMovie(movie);
-        fragmentManager.beginTransaction()
-                .add(R.id.detailsViewFrame, movieDetailFragment)
-                .commit();
+            movieDetailFragment = new MovieDetailFragment();
+            movieDetailFragment.setMovie(movie);
+            fragmentManager.beginTransaction()
+                    .add(R.id.detailsViewFrame, movieDetailFragment)
+                    .commit();
+        } else {
+            posterFragment.loadNewPoster(movie.poster_path);
+            movieDetailFragment.loadNewMovie(movie);
+        }
     }
 
     public void addFavorite(View view) {

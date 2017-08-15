@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.PreferenceManager;
-
 import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,9 +19,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.popularmovies.activities.MainActivity;
 import com.android.popularmovies.R;
 import com.android.popularmovies.SettingsBottomSheetDialog;
+import com.android.popularmovies.activities.MainActivity;
 import com.android.popularmovies.adapters.Movie;
 import com.android.popularmovies.adapters.MyAdapter;
 import com.android.popularmovies.databinding.FragmentGridViewBinding;
@@ -34,12 +33,12 @@ import java.util.List;
 public class GridViewFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener,
         MyAdapter.ListItemClickListener, View.OnTouchListener {
 
+    public MyAdapter moviesAdapter;
     FragmentGridViewBinding binding;
     private MainActivity mainActivity;
     private int pageNoInteger = 1;
     private View rootView;
     private OnImageClickListener mCallback;
-    public MyAdapter moviesAdapter;
     private SharedPreferences sharedPreferences;
     private String sortBy;
     private int loaderId;
@@ -56,7 +55,6 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         rootView = binding.getRoot();
 
         binding.emptyView.setVisibility(View.GONE);
-        binding.loadingIndicator.setVisibility(View.VISIBLE);
 
 
         int columns = setupSharedPreferences();
@@ -155,12 +153,12 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     }
 
     @Override
-    public void onListItemClick(int clickedItemIndex) {
+    public void onListItemClick(int clickedItemIndex, View view) {
         Movie movie = (Movie) moviesAdapter.getDataAtPosition(clickedItemIndex);
-        mCallback.onImageSelected(movie);
+        mCallback.onImageSelected(movie, view);
     }
 
-    public void onLoadFinished(final List<Movie>  data) {
+    public void onLoadFinished(final List<Movie> data) {
         binding.loadingIndicator.setVisibility(View.GONE);
         if (pageNoInteger == 1) {
             if (moviesAdapter != null) {
@@ -172,7 +170,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
                 rootView.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallback.onImageSelected(data.get(0));
+                        mCallback.onImageSelected(data.get(0), rootView);
                     }
                 });
             }
@@ -247,6 +245,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
 
     public void setAdapter(final int columns, List<Movie> movieList) {
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), columns);
+        layoutManager.setSpanCount(columns);
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setHasFixedSize(true);
         moviesAdapter = new MyAdapter(movieList, this, columns);
@@ -277,7 +276,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     }
 
     public interface OnImageClickListener {
-        void onImageSelected(Movie movie);
+        void onImageSelected(Movie movie, View view);
     }
 
 }

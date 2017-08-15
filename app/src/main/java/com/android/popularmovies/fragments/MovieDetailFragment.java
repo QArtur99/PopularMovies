@@ -26,9 +26,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.popularmovies.R;
 import com.android.popularmovies.activities.MainActivity;
 import com.android.popularmovies.activities.MovieDetailActivity;
-import com.android.popularmovies.R;
 import com.android.popularmovies.adapters.DetailsAdapter;
 import com.android.popularmovies.adapters.Movie;
 import com.android.popularmovies.database.DatabaseContract;
@@ -57,6 +57,7 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     private List<JSONObject> jsonObjectTrailers, jsonObjectReviews;
     private int dialogInfo;
     private DetailsAdapter detailsAdapter;
+    private boolean firstStart = true;
 
     public MovieDetailFragment() {
     }
@@ -66,6 +67,11 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
         ButterKnife.bind(this, rootView);
+        setData();
+        return rootView;
+    }
+
+    private void setData() {
         if (movie != null) {
 
             setTextBackground();
@@ -82,12 +88,15 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
                 getActivity().getSupportLoaderManager().restartLoader(3, null, mainActivity).forceLoad();
             }
         }
-
-        return rootView;
     }
 
     public void setMovie(Movie movie) {
         this.movie = movie;
+    }
+
+    public void loadNewMovie(Movie movie) {
+        this.movie = movie;
+        setData();
     }
 
     private void setDetailData() {
@@ -105,19 +114,28 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
             final ImageView imageView = new ImageView(getActivity());
             Picasso.with(getContext()).load(posterURL).into(imageView);
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Drawable poster = imageView.getDrawable();
-                    if (poster != null) {
-                        Drawable[] layers = new Drawable[2];
-                        layers[0] = poster;
-                        layers[1] = ContextCompat.getDrawable(getActivity(), R.drawable.background_transparent);
-                        LayerDrawable layerDrawable = new LayerDrawable(layers);
-                        detailLayout.setBackground(layerDrawable);
+            if (firstStart) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        createLayerDrawable(imageView);
                     }
-                }
-            }, 100);
+                }, 700);
+                firstStart = false;
+            } else {
+                createLayerDrawable(imageView);
+            }
+        }
+    }
+
+    private void createLayerDrawable(ImageView imageView) {
+        Drawable poster = imageView.getDrawable();
+        if (poster != null) {
+            Drawable[] layers = new Drawable[2];
+            layers[0] = poster;
+            layers[1] = ContextCompat.getDrawable(getActivity(), R.drawable.background_transparent);
+            LayerDrawable layerDrawable = new LayerDrawable(layers);
+            detailLayout.setBackground(layerDrawable);
         }
     }
 

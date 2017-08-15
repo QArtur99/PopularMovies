@@ -12,10 +12,10 @@ import com.android.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
 
-
 public class PosterFragment extends Fragment {
 
     private String posterURL;
+    private ImageView imageView;
 
     public PosterFragment() {
     }
@@ -25,12 +25,17 @@ public class PosterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_poster, container, false);
-        ImageView imageView = rootView.findViewById(R.id.posterView);
+        imageView = rootView.findViewById(R.id.posterView);
         Picasso.with(getContext()).load(posterURL).into(imageView);
         return rootView;
     }
 
     public void setPoster(String url) {
         posterURL = "http://image.tmdb.org/t/p/w500/" + url;
+    }
+
+    public void loadNewPoster(String url) {
+        posterURL = "http://image.tmdb.org/t/p/w500/" + url;
+        Picasso.with(getContext()).load(posterURL).into(imageView);
     }
 }
