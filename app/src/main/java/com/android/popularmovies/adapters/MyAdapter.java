@@ -28,7 +28,7 @@ public class MyAdapter extends MyBaseAdapter {
     }
 
     @Override
-    public Object getDataAtPosition(int position) {
+    public Movie getDataAtPosition(int position) {
         return data.get(position);
     }
 

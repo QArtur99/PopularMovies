@@ -87,8 +87,10 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
             appBar.addOnOffsetChangedListener(this);
         }
 
-        setPosterSize();
-        setPoster();
+        if(toolbarImage != null) {
+            setPosterSize();
+            setPoster();
+        }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         movieDetailFragment = new MovieDetailFragment();
@@ -123,10 +125,14 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
 
     private void setFabIcon() {
         if (isFavorite) {
-            fabTop.setImageResource(R.drawable.ic_favorite);
+            if(fabTop != null) {
+                fabTop.setImageResource(R.drawable.ic_favorite);
+            }
             fabBottom.setImageResource(R.drawable.ic_favorite);
         } else {
-            fabTop.setImageResource(R.drawable.ic_favorite_border);
+            if(fabTop != null) {
+                fabTop.setImageResource(R.drawable.ic_favorite_border);
+            }
             fabBottom.setImageResource(R.drawable.ic_favorite_border);
         }
     }
@@ -177,12 +183,12 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
     }
 
     public void setPosterSize() {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getRealSize(size);
-        ViewGroup.LayoutParams params = toolbarImage.getLayoutParams();
-        params.height = (int) (size.x * 1.5);
-        toolbarImage.setLayoutParams(params);
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getRealSize(size);
+            ViewGroup.LayoutParams params = toolbarImage.getLayoutParams();
+            params.height = (int) (size.x * 1.5);
+            toolbarImage.setLayoutParams(params);
     }
 
     @Override
