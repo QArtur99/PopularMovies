@@ -36,6 +36,8 @@ public class PosterFragment extends Fragment {
 
     public void loadNewPoster(String url) {
         posterURL = "http://image.tmdb.org/t/p/w500/" + url;
-        Picasso.with(getContext()).load(posterURL).into(imageView);
+        if(imageView != null) {
+            Picasso.with(getContext()).load(posterURL).into(imageView);
+        }
     }
 }

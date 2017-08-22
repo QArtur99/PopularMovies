@@ -25,6 +25,8 @@ import com.android.popularmovies.activities.MainActivity;
 import com.android.popularmovies.adapters.Movie;
 import com.android.popularmovies.adapters.MyAdapter;
 import com.android.popularmovies.databinding.FragmentGridViewBinding;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,8 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     private SharedPreferences sharedPreferences;
     private String sortBy;
     private int loaderId;
+    private int recyclerViewPosition;
+    private GridLayoutManager layoutManager;
 
     public GridViewFragment() {
     }
@@ -55,7 +59,9 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         rootView = binding.getRoot();
 
         binding.emptyView.setVisibility(View.GONE);
+        recyclerViewPosition = 0;
 
+        Bundle bundle = this.getArguments();
 
         int columns = setupSharedPreferences();
         setAdapter(columns, new ArrayList<Movie>());
@@ -63,11 +69,19 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
             loaderId = 0;
             binding.recyclerView.setOnTouchListener(null);
-            getActivity().getSupportLoaderManager().initLoader(0, null, mainActivity).forceLoad();
+            if (bundle != null) {
+                restore(((MainActivity) getActivity()).getSavedInstanceState());
+            } else {
+                getActivity().getSupportLoaderManager().initLoader(0, null, mainActivity).forceLoad();
+            }
         } else if (checkConnection()) {
             loaderId = 1;
             binding.recyclerView.setOnTouchListener(this);
-            getActivity().getSupportLoaderManager().initLoader(1, null, mainActivity).forceLoad();
+            if (bundle != null) {
+                restore(((MainActivity) getActivity()).getSavedInstanceState());
+            } else {
+                getActivity().getSupportLoaderManager().initLoader(1, null, mainActivity).forceLoad();
+            }
         } else {
             setInfoNoConnection();
         }
@@ -152,9 +166,28 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         return false;
     }
 
+    public void restore(Bundle bundle) {
+        if (bundle != null) {
+            pageNoInteger = sharedPreferences.getInt(getString(R.string.pref_pageNo), 1);
+            recyclerViewPosition = sharedPreferences.getInt(getString(R.string.pref_lastClicked), 0);
+            List<Movie> data = new Gson().fromJson(bundle.getString(MainActivity.DATA), new TypeToken<List<Movie>>() {
+            }.getType());
+            onLoadFinished(data);
+            binding.recyclerView.scrollToPosition(sharedPreferences.getInt(getString(R.string.pref_firstView), 0));
+            int orientation = getResources().getConfiguration().orientation;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Movie movie = (Movie) moviesAdapter.getDataAtPosition(recyclerViewPosition);
+                mCallback.onImageSelected(movie, binding.recyclerView.getChildAt(recyclerViewPosition));
+            }
+        }
+    }
+
     @Override
     public void onListItemClick(int clickedItemIndex, View view) {
         Movie movie = (Movie) moviesAdapter.getDataAtPosition(clickedItemIndex);
+        sharedPreferences.edit().putInt(getString(R.string.pref_pageNo), pageNoInteger).apply();
+        sharedPreferences.edit().putInt(getString(R.string.pref_lastClicked), clickedItemIndex).apply();
+        sharedPreferences.edit().putInt(getString(R.string.pref_firstView), getFirstVisibleItemPosition()).apply();
         mCallback.onImageSelected(movie, view);
     }
 
@@ -170,7 +203,9 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
                 rootView.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCallback.onImageSelected(data.get(0), rootView);
+                        if(getContext() != null) {
+                            mCallback.onImageSelected(data.get(recyclerViewPosition), rootView);
+                        }
                     }
                 });
             }
@@ -244,7 +279,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     }
 
     public void setAdapter(final int columns, List<Movie> movieList) {
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), columns);
+        layoutManager = new GridLayoutManager(getContext(), columns);
         layoutManager.setSpanCount(columns);
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setHasFixedSize(true);
@@ -266,6 +301,14 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
 
     public String getSortBy() {
         return sortBy;
+    }
+
+    public List<Movie> getData() {
+        return moviesAdapter.getData();
+    }
+
+    public int getFirstVisibleItemPosition() {
+        return layoutManager.findFirstVisibleItemPosition();
     }
 
     private void openBottomDialog() {

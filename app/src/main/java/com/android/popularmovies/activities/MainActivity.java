@@ -34,11 +34,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GridViewFragment.OnImageClickListener, LoaderManager.LoaderCallbacks {
+    public static final String DATA = "data";
 
     public GridViewFragment headFragment;
     private MovieDetailFragment movieDetailFragment;
     private PosterFragment posterFragment;
     private Cursor cursor;
+    private Bundle savedInstanceState;
 
     @Nullable
     private SimpleIdlingResource mIdlingResource;
@@ -57,8 +59,16 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Bundle bundle = null;
+        if(savedInstanceState != null){
+            this.savedInstanceState =savedInstanceState;
+            bundle = new Bundle();
+            bundle.putString(DATA, DATA);
+        }
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         headFragment = new GridViewFragment();
+        headFragment.setArguments(bundle);
         fragmentManager.beginTransaction()
                 .add(R.id.gridViewFrame, headFragment)
                 .commit();
@@ -69,8 +79,16 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
         } else {
             getSupportActionBar().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.gradient_tool_bar));
         }
+    }
 
-
+    public Bundle getSavedInstanceState(){
+        return savedInstanceState;
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String jsonString = new Gson().toJson(headFragment.getData());
+        outState.putString(DATA, jsonString);
     }
 
     @Override

@@ -54,6 +54,10 @@
     <string name="editor_delete_product_failed">Error with removing movie</string>
 
 
+    //onSaveInstanceState
+    <string name="pref_pageNo" translatable="false">pref_pageNo</string>
+    <string name="pref_firstView" translatable="false">pref_firstView</string>
+    <string name="pref_lastClicked" translatable="false">pref_lastClicked</string>
 
     //Test
     <string name="middle">This is the middle!</string>

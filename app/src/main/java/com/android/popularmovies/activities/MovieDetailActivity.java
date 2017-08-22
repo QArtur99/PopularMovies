@@ -101,6 +101,8 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
 
     }
 
+
+
     private void isFavorite() {
         String selection = DatabaseContract.Movies.MOVIE_ID + "=?";
         String[] selectionArgs = new String[]{movie.id};

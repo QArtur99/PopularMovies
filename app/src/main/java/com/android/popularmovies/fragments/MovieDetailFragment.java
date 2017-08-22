@@ -67,7 +67,9 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
         ButterKnife.bind(this, rootView);
-        setData();
+        if(getActivity() != null) {
+            setData();
+        }
         return rootView;
     }
 
@@ -96,7 +98,9 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
 
     public void loadNewMovie(Movie movie) {
         this.movie = movie;
-        setData();
+        if(getContext() != null) {
+            setData();
+        }
     }
 
     private void setDetailData() {
@@ -111,19 +115,21 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
     private void setTextBackground() {
         if (movie != null) {
             String posterURL = "http://image.tmdb.org/t/p/w500/" + movie.poster_path;
-            final ImageView imageView = new ImageView(getActivity());
-            Picasso.with(getContext()).load(posterURL).into(imageView);
+            if(getContext() != null) {
+                final ImageView imageView = new ImageView(getActivity());
+                Picasso.with(getContext()).load(posterURL).into(imageView);
 
-            if (firstStart) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        createLayerDrawable(imageView);
-                    }
-                }, 700);
-                firstStart = false;
-            } else {
-                createLayerDrawable(imageView);
+                if (firstStart) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            createLayerDrawable(imageView);
+                        }
+                    }, 700);
+                    firstStart = false;
+                } else {
+                    createLayerDrawable(imageView);
+                }
             }
         }
     }
@@ -210,7 +216,10 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
             case 2:
                 jsonObject = jsonObjectReviews.get(clickedItemIndex);
                 try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(jsonObject.getString("url"))));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(jsonObject.getString("url")));
+                    if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                        startActivity(intent);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -219,7 +228,10 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
                 jsonObject = jsonObjectTrailers.get(clickedItemIndex);
                 try {
                     String youTubeBase = "https://www.youtube.com/watch?v=";
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(youTubeBase + jsonObject.getString("key"))));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(youTubeBase + jsonObject.getString("key")));
+                    if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                        startActivity(intent);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
