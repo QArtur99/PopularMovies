@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.popularmovies.activities.MainActivity;
-import com.android.popularmovies.adapters.MyAdapter;
+import com.android.popularmovies.adapters.MoviesAdapter;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -75,7 +75,7 @@ public class MainActivityTest {
     public void hasSpecialText() {
         mActivityTestRule.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         while (condition) {
-            MyAdapter myAdapter = mActivityTestRule.getActivity().headFragment.moviesAdapter;
+            MoviesAdapter myAdapter = mActivityTestRule.getActivity().headFragment.moviesAdapter;
             if (myAdapter != null && 20 > myAdapter.getItemCount()) {
                 String middleElementText = mActivityTestRule.getActivity().getResources().getString(R.string.middle);
                 onView(withId(R.id.recyclerView)).perform(RecyclerViewActions.actionOnItemAtPosition(19, setTextInTextView(middleElementText)));

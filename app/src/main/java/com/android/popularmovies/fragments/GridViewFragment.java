@@ -311,8 +311,12 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         return columns;
     }
 
-    public void setAdapter(final int columns, List<Movie> movieList) {
-        layoutManager = new GridLayoutManager(getContext(), columns);
+    public void setAdapter(int columns, List<Movie> movieList) {
+        if(columns == 2) {
+            layoutManager = new GridLayoutManager(getContext(), 2);
+        }else{
+            layoutManager = new GridLayoutManager(getContext(), columns);
+        }
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         moviesAdapter = new MoviesAdapter(movieList, this, columns);

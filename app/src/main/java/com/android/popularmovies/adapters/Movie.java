@@ -1,15 +1,10 @@
 package com.android.popularmovies.adapters;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
-
-import com.android.popularmovies.BR;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class Movie extends BaseObservable {
+public class Movie {
     public String vote_count;
     public String id;
     public String video;
@@ -79,15 +74,4 @@ public class Movie extends BaseObservable {
             release_date = jsonObject.getString("release_date");
         }
     }
-
-    @Bindable
-    public String getOriginal_title() {
-        return original_title;
-    }
-
-    public void setOriginal_title(String original_title) {
-        this.original_title = original_title;
-        notifyPropertyChanged(BR.original_title);
-    }
-
 }

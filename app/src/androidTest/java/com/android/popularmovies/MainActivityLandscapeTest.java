@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.android.popularmovies.activities.MainActivity;
-import com.android.popularmovies.adapters.MyAdapter;
+import com.android.popularmovies.adapters.MoviesAdapter;
 import com.android.popularmovies.fragments.GridViewFragment;
 import com.android.popularmovies.fragments.MovieDetailFragment;
 import com.android.popularmovies.fragments.PosterFragment;
@@ -88,7 +88,7 @@ public class MainActivityLandscapeTest {
         mActivityTestRule.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         while (condition) {
-            MyAdapter myAdapter = mActivityTestRule.getActivity().headFragment.moviesAdapter;
+            MoviesAdapter myAdapter = mActivityTestRule.getActivity().headFragment.moviesAdapter;
             if (myAdapter != null && 20 > myAdapter.getItemCount()) {
 
                 String middleElementText = mActivityTestRule.getActivity().getResources().getString(R.string.middle);
