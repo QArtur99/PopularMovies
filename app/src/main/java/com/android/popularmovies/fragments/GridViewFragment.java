@@ -3,7 +3,6 @@ package com.android.popularmovies.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,25 +18,35 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.popularmovies.R;
 import com.android.popularmovies.SettingsBottomSheetDialog;
 import com.android.popularmovies.activities.MainActivity;
 import com.android.popularmovies.adapters.Movie;
-import com.android.popularmovies.adapters.MyAdapter;
-import com.android.popularmovies.databinding.FragmentGridViewBinding;
+import com.android.popularmovies.adapters.MoviesAdapter;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayout;
 import com.orangegangsters.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class GridViewFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener,
-        MyAdapter.ListItemClickListener, SwipyRefreshLayout.OnRefreshListener, View.OnTouchListener {
+        MoviesAdapter.ListItemClickListener, SwipyRefreshLayout.OnRefreshListener, View.OnTouchListener {
 
-    public MyAdapter moviesAdapter;
-    FragmentGridViewBinding binding;
+    public MoviesAdapter moviesAdapter;
+    @BindView(R.id.emptyView) RelativeLayout emptyView;
+    @BindView(R.id.recyclerView) RecyclerView recyclerView;
+    @BindView(R.id.swipeRefreshLayout) SwipyRefreshLayout swipyRefreshLayout;
+    @BindView(R.id.loading_indicator) ProgressBar loadingIndicator;
+    @BindView(R.id.empty_title_text) TextView emptyTitleText;
+    @BindView(R.id.empty_subtitle_text) TextView emptySubtitleText;
     private MainActivity mainActivity;
     private int pageNoInteger = 1;
     private View rootView;
@@ -57,25 +67,25 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         mainActivity = ((MainActivity) getActivity());
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_grid_view, container, false);
-        rootView = binding.getRoot();
+        rootView = inflater.inflate(R.layout.fragment_grid_view, container, false);
+        ButterKnife.bind(this, rootView);
 
-        binding.emptyView.setVisibility(View.GONE);
+        emptyView.setVisibility(View.GONE);
         recyclerViewPosition = 0;
 
         bundle = getArguments();
-        binding.recyclerView.setOnTouchListener(this);
+        recyclerView.setOnTouchListener(this);
 
         int columns = setupSharedPreferences();
         setAdapter(columns, new ArrayList<Movie>());
 
         if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
             loaderId = 0;
-            binding.swipeRefreshLayout.setOnRefreshListener(null);
+            swipyRefreshLayout.setOnRefreshListener(null);
             getActivity().getSupportLoaderManager().initLoader(0, null, mainActivity).forceLoad();
         } else if (checkConnection()) {
             loaderId = 1;
-            binding.swipeRefreshLayout.setOnRefreshListener(this);
+            swipyRefreshLayout.setOnRefreshListener(this);
             getActivity().getSupportLoaderManager().initLoader(1, null, mainActivity).forceLoad();
         } else {
             setInfoNoConnection();
@@ -172,7 +182,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     }
 
     public void onLoadFinished(final List<Movie> data) {
-        binding.loadingIndicator.setVisibility(View.GONE);
+        loadingIndicator.setVisibility(View.GONE);
         if (pageNoInteger == 1) {
             if (moviesAdapter != null) {
                 moviesAdapter.clearMovies();
@@ -189,7 +199,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
                     }
                 });
             }
-            binding.emptyView.setVisibility(View.GONE);
+            emptyView.setVisibility(View.GONE);
             moviesAdapter.setMovies(data);
             if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
                 if (recyclerViewPosition > moviesAdapter.getItemCount()) {
@@ -200,7 +210,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
             if (bundle != null) {
                 int adapterSize = moviesAdapter.getItemCount();
                 if (adapterSize > recyclerViewPosition) {
-                    binding.recyclerView.scrollToPosition(firstView);
+                    recyclerView.scrollToPosition(firstView);
                     int orientation = getResources().getConfiguration().orientation;
                     if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                         final Movie movie = (Movie) moviesAdapter.getDataAtPosition(recyclerViewPosition);
@@ -208,26 +218,26 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
                             @Override
                             public void run() {
                                 if (getContext() != null) {
-                                    mCallback.onImageSelected(movie, binding.recyclerView.getChildAt(recyclerViewPosition));
+                                    mCallback.onImageSelected(movie, recyclerView.getChildAt(recyclerViewPosition));
                                 }
                             }
                         });
                     }
                 } else if (adapterSize > 0) {
-                    binding.recyclerView.scrollToPosition(adapterSize - 1);
-                    binding.swipeRefreshLayout.setRefreshing(true);
+                    recyclerView.scrollToPosition(adapterSize - 1);
+                    swipyRefreshLayout.setRefreshing(true);
                     onRefresh(SwipyRefreshLayoutDirection.BOTTOM);
                 }
             }
 
         } else {
-            binding.emptyView.setVisibility(View.VISIBLE);
+            emptyView.setVisibility(View.VISIBLE);
             if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
-                binding.emptyTitleText.setText(getString(R.string.no_favorite));
-                binding.emptySubtitleText.setText(getString(R.string.no_favorite_sub_text));
+                emptyTitleText.setText(getString(R.string.no_favorite));
+                emptySubtitleText.setText(getString(R.string.no_favorite_sub_text));
             } else {
-                binding.emptyTitleText.setText(getString(R.string.server_problem));
-                binding.emptySubtitleText.setText(getString(R.string.server_problem_sub_text));
+                emptyTitleText.setText(getString(R.string.server_problem));
+                emptySubtitleText.setText(getString(R.string.server_problem_sub_text));
             }
         }
     }
@@ -245,10 +255,10 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
             pageNoInteger = 1;
             sortBy = sharedPreferences.getString(key, getString(R.string.pref_sort_by_most_popular_default));
             if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
-                binding.swipeRefreshLayout.setOnRefreshListener(null);
+                swipyRefreshLayout.setOnRefreshListener(null);
                 restartLoader(0);
             } else {
-                binding.swipeRefreshLayout.setOnRefreshListener(this);
+                swipyRefreshLayout.setOnRefreshListener(this);
                 restartLoader(1);
             }
         }
@@ -272,11 +282,11 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     }
 
     private void setInfoNoConnection() {
-        binding.recyclerView.setVisibility(View.GONE);
-        binding.loadingIndicator.setVisibility(View.GONE);
-        binding.emptyView.setVisibility(View.VISIBLE);
-        binding.emptyTitleText.setText(getString(R.string.no_connection));
-        binding.emptySubtitleText.setText(getString(R.string.no_connection_sub_text));
+        recyclerView.setVisibility(View.GONE);
+        loadingIndicator.setVisibility(View.GONE);
+        emptyView.setVisibility(View.VISIBLE);
+        emptyTitleText.setText(getString(R.string.no_connection));
+        emptySubtitleText.setText(getString(R.string.no_connection_sub_text));
     }
 
     @Override
@@ -303,11 +313,10 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
 
     public void setAdapter(final int columns, List<Movie> movieList) {
         layoutManager = new GridLayoutManager(getContext(), columns);
-        layoutManager.setSpanCount(columns);
-        binding.recyclerView.setLayoutManager(layoutManager);
-        binding.recyclerView.setHasFixedSize(true);
-        moviesAdapter = new MyAdapter(movieList, this, columns);
-        binding.recyclerView.setAdapter(moviesAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        moviesAdapter = new MoviesAdapter(movieList, this, columns);
+        recyclerView.setAdapter(moviesAdapter);
     }
 
     @Override
@@ -354,7 +363,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
             restartLoader(loaderId);
         }
 
-        binding.swipeRefreshLayout.setRefreshing(false);
+        swipyRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -364,6 +373,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         }
         return false;
     }
+
 
     public interface OnImageClickListener {
         void onImageSelected(Movie movie, View view);

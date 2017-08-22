@@ -13,7 +13,8 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/ripple"
         android:foreground="?android:attr/selectableItemBackground"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY"
+        android:transitionName="poster"/>
 
     <TextView
         android:id="@+id/movieTitle"
