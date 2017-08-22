@@ -249,7 +249,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_number_of_columns_key))) {
-            int columns = sharedPreferences.getInt(key, R.integer.number_of_columns);
+            int columns = sharedPreferences.getInt(key, getResources().getInteger(R.integer.number_of_columns));
             setAdapter(columns, moviesAdapter.getData());
         } else if (key.equals(getString(R.string.pref_sort_by_key))) {
             pageNoInteger = 1;
@@ -306,17 +306,13 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     public int setupSharedPreferences() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        int columns = sharedPreferences.getInt(getString(R.string.pref_number_of_columns_key), R.integer.number_of_columns);
+        int columns = sharedPreferences.getInt(getString(R.string.pref_number_of_columns_key), getResources().getInteger(R.integer.number_of_columns));
         sortBy = sharedPreferences.getString(getString(R.string.pref_sort_by_key), getString(R.string.pref_sort_by_most_popular_default));
         return columns;
     }
 
     public void setAdapter(int columns, List<Movie> movieList) {
-        if(columns == 2) {
-            layoutManager = new GridLayoutManager(getContext(), 2);
-        }else{
-            layoutManager = new GridLayoutManager(getContext(), columns);
-        }
+        layoutManager = new GridLayoutManager(getContext(), columns);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         moviesAdapter = new MoviesAdapter(movieList, this, columns);
