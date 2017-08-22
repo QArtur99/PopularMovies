@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
     private MovieDetailFragment movieDetailFragment;
     private PosterFragment posterFragment;
     private Cursor cursor;
-    private Bundle savedInstanceState;
 
     @Nullable
     private SimpleIdlingResource mIdlingResource;
@@ -61,17 +60,17 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
 
         Bundle bundle = null;
         if(savedInstanceState != null){
-            this.savedInstanceState =savedInstanceState;
             bundle = new Bundle();
             bundle.putString(DATA, DATA);
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        headFragment = new GridViewFragment();
-        headFragment.setArguments(bundle);
-        fragmentManager.beginTransaction()
-                .add(R.id.gridViewFrame, headFragment)
-                .commit();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            headFragment = new GridViewFragment();
+            headFragment.setArguments(bundle);
+            fragmentManager.beginTransaction()
+                    .add(R.id.gridViewFrame, headFragment)
+                    .commit();
+
 
         if (findViewById(R.id.detailsViewFrame) == null) {
             Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -81,15 +80,35 @@ public class MainActivity extends AppCompatActivity implements GridViewFragment.
         }
     }
 
-    public Bundle getSavedInstanceState(){
-        return savedInstanceState;
-    }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        String jsonString = new Gson().toJson(headFragment.getData());
-        outState.putString(DATA, jsonString);
+        outState.putString(DATA, DATA);
     }
+
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        menu.clear();
+//        inflater.inflate(R.menu.menu, menu);
+//        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            menu.findItem(R.id.action_favorite).setVisible(true);
+//        } else {
+//            menu.findItem(R.id.action_favorite).setVisible(false);
+//        }
+//        super.onCreateOptionsMenu(menu, inflater);
+//    }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu, menu);
+//        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            menu.findItem(R.id.action_favorite).setVisible(true);
+//        } else {
+//            menu.findItem(R.id.action_favorite).setVisible(false);
+//        }
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
     @Override
     public void onImageSelected(Movie movie, View view) {
