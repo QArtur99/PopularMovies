@@ -72,12 +72,12 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
 
         emptyView.setVisibility(View.GONE);
         recyclerViewPosition = 0;
-
-        bundle = getArguments();
         recyclerView.setOnTouchListener(this);
 
         int columns = setupSharedPreferences();
         setAdapter(columns, new ArrayList<Movie>());
+        bundle = getArguments();
+        getBundleData();
 
         if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
             loaderId = 0;
@@ -92,6 +92,21 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         }
 
         return rootView;
+    }
+
+    private void getBundleData() {
+        if (bundle != null) {
+            recyclerViewPosition = sharedPreferences.getInt(getString(R.string.pref_lastClicked), 0);
+            sortBy = sharedPreferences.getString(getString(R.string.pref_sort_by_key), getString(R.string.pref_sort_by_most_popular_default));
+            if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
+                pageNoInteger = 1;
+                loaderId = 0;
+            } else {
+                loaderId = 1;
+                pageNoInteger = sharedPreferences.getInt(getString(R.string.pref_pageNo), 1);
+                firstView = sharedPreferences.getInt(getString(R.string.pref_firstView), 0);
+            }
+        }
     }
 
     @Override
@@ -112,23 +127,6 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (bundle != null) {
-            recyclerViewPosition = sharedPreferences.getInt(getString(R.string.pref_lastClicked), 0);
-            sortBy = sharedPreferences.getString(getString(R.string.pref_sort_by_key), getString(R.string.pref_sort_by_most_popular_default));
-            if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
-                pageNoInteger = 1;
-                loaderId = 0;
-            } else {
-                loaderId = 1;
-                pageNoInteger = sharedPreferences.getInt(getString(R.string.pref_pageNo), 1);
-                firstView = sharedPreferences.getInt(getString(R.string.pref_firstView), 0);
-            }
-
-        }
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
