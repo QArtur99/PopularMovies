@@ -58,7 +58,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     private int firstView = 0;
     private GridLayoutManager layoutManager;
     private Bundle bundle;
-    private boolean loadMore;
+    private boolean loadMore = false;
 
     public GridViewFragment() {
     }
@@ -70,7 +70,6 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         mainActivity = ((MainActivity) getActivity());
         rootView = inflater.inflate(R.layout.fragment_grid_view, container, false);
         ButterKnife.bind(this, rootView);
-        loadMore = false;
 
         emptyView.setVisibility(View.GONE);
         recyclerViewPosition = 0;
@@ -99,6 +98,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
     private void getBundleData() {
 
         if (bundle != null) {
+            loadMore = false;
             recyclerViewPosition = sharedPreferences.getInt(getString(R.string.pref_lastClicked), 0);
             sortBy = sharedPreferences.getString(getString(R.string.pref_sort_by_key), getString(R.string.pref_sort_by_most_popular_default));
             if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
@@ -204,6 +204,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
 
             if (loadMore) {
                 recyclerView.scrollToPosition(moviesAdapter.getItemCount() - 1);
+                loadMore = false;
             }
 
             moviesAdapter.setMovies(data);

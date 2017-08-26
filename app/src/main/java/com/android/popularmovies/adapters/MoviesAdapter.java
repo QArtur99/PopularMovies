@@ -23,10 +23,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by ART_F on 2017-08-22.
- */
-
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHolder> {
 
 
@@ -74,14 +70,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
 
         GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) relativeLayout.getLayoutParams();
 
-        if(context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
-                && widthDp >= 600){
-            int spaceWidth = (int) (width / 3);
-            int posterWidth =  spaceWidth / getNumberOfColumns();
-            layoutParams.width = (int)  posterWidth;
+        if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+                && widthDp >= 600) {
+            int spaceWidth = width / 3;
+            int posterWidth = spaceWidth / getNumberOfColumns();
+            layoutParams.width = posterWidth;
             layoutParams.height = (int) (posterWidth * 1.5);
-        }else{
-            int posterWidth =  width / getNumberOfColumns();
+        } else {
+            int posterWidth = width / getNumberOfColumns();
             layoutParams.height = (int) (posterWidth * 1.5);
         }
         relativeLayout.setLayoutParams(layoutParams);
@@ -124,7 +120,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         public void bind(int position) {
             Movie movie = (Movie) getDataAtPosition(position);
             String posterURL = "http://image.tmdb.org/t/p/w185/" + movie.poster_path;
-//            Picasso.with(poster.getContext()).load(posterURL).into(poster);
             Glide.with(poster.getContext())
                     .load(posterURL)
                     .thumbnail(Glide.with(poster.getContext()).load(R.drawable.ic_ondemand_video))
