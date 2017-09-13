@@ -6,7 +6,7 @@
               android:layout_height="match_parent"
               android:baselineAligned="false"
               android:orientation="horizontal"
-              tools:context="com.android.popularmovies.activities.MainActivity">
+              tools:context="com.android.popularmovies.com.qartf.popularmovies.activities.MainActivity">
 
     <FrameLayout
         android:id="@+id/gridViewFrame"

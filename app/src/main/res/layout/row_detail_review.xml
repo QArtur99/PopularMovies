@@ -11,12 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/dialogAuthor"
         android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/detailContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/dialogDetailContent"
         android:ellipsize="end"
         android:lines="1"/>
 

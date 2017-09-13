@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:id="@+id/coordinatorLayout"
     android:fitsSystemWindows="true"
-    tools:context="com.android.popularmovies.activities.MovieDetailActivity"
+    tools:context="com.android.popularmovies.com.qartf.popularmovies.activities.MovieDetailActivity"
     tools:ignore="MergeRootFrame">
 
     <android.support.design.widget.AppBarLayout

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.popularmovies" >
+    package="com.qartf.popularmovies" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,18 +15,18 @@
         android:largeHeap="true"
         android:hardwareAccelerated="true"
         android:fullBackupContent="false">
-        <activity android:name=".activities.MainActivity" >
+        <activity android:name="com.qartf.popularmovies.activities.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MovieDetailActivity"
+        <activity android:name="com.qartf.popularmovies.activities.MovieDetailActivity"
                   android:label="MovieDetailActivity"
-                  android:parentActivityName=".activities.MainActivity"/>
+                  android:parentActivityName="com.qartf.popularmovies.activities.MainActivity"/>
         <provider
-            android:name=".database.DatabaseProvider"
+            android:name="com.qartf.popularmovies.database.DatabaseProvider"
             android:authorities="com.android.popularmovies"
             android:exported="false" />
     </application>

@@ -4,23 +4,33 @@ def keystorePropertiesFile = file("C:\\Users\\USER\\AndroidStudioProjects\\.grad
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+def keystorePropertiesFileSigning = rootProject.file("keystore.properties")
+def keystorePropertiesSigning = new Properties()
+keystorePropertiesSigning.load(new FileInputStream(keystorePropertiesFileSigning))
 
+android {
+    signingConfigs {
+        config {
+            keyAlias keystorePropertiesSigning['keyAlias']
+            keyPassword keystorePropertiesSigning['keyPassword']
+            storeFile file(keystorePropertiesSigning['storeFile'])
+            storePassword keystorePropertiesSigning['storePassword']
+        }
+    }
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
     dataBinding {
         enabled = true
     }
-
     defaultConfig {
-        applicationId "com.android.popularmovies"
+        applicationId "com.qartf.popularmovies"
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.config
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -31,7 +41,6 @@ android {
             }
         }
     }
-
 }
 
 dependencies {
@@ -54,7 +63,6 @@ dependencies {
     compile 'com.github.orangegangsters:swipy:1.2.3@aar'
     compile 'com.github.bumptech.glide:glide:4.0.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
-
     // Testing-only dependencies
     androidTestCompile 'com.android.support:support-annotations:26.0.0-alpha1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'

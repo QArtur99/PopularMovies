@@ -12,7 +12,7 @@
         android:gravity="center"
         android:padding="16dp"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="22sp"
+        android:textSize="@dimen/dialogTitle"
         android:textStyle="bold"/>
 
     <android.support.v7.widget.RecyclerView

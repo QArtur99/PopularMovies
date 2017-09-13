@@ -23,6 +23,7 @@
         android:layout_alignBottom="@+id/itemImage"
         android:layout_centerHorizontal="true"
         android:background="@color/textTransparent"
+        android:textSize="@dimen/item_title"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="3"
