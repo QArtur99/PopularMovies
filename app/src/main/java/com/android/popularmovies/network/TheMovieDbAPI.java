@@ -61,7 +61,6 @@ public class TheMovieDbAPI {
         urlConnection.setRequestMethod("GET");
         urlConnection.setReadTimeout(10000);
         urlConnection.setConnectTimeout(15000);
-        urlConnection.setDoOutput(true);
         urlConnection.connect();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));

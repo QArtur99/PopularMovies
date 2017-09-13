@@ -74,6 +74,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
         emptyView.setVisibility(View.GONE);
         recyclerViewPosition = 0;
         recyclerView.setOnTouchListener(this);
+        swipyRefreshLayout.setOnRefreshListener(this);
 
         int columns = setupSharedPreferences();
         setAdapter(columns, new ArrayList<Movie>());
@@ -82,11 +83,9 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
 
         if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
             loaderId = 0;
-            swipyRefreshLayout.setOnRefreshListener(null);
             getActivity().getSupportLoaderManager().initLoader(0, null, mainActivity).forceLoad();
         } else if (checkConnection()) {
             loaderId = 1;
-            swipyRefreshLayout.setOnRefreshListener(this);
             getActivity().getSupportLoaderManager().initLoader(1, null, mainActivity).forceLoad();
         } else {
             setInfoNoConnection();
@@ -208,7 +207,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
             }
 
             moviesAdapter.setMovies(data);
-            if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
+            if (sortBy.equals(getResources().getString(R.string.pref_sort_by_favorite))) {
                 if (recyclerViewPosition > moviesAdapter.getItemCount()) {
                     recyclerViewPosition = 0;
                 }
@@ -239,7 +238,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
 
         } else {
             emptyView.setVisibility(View.VISIBLE);
-            if (sortBy.equals(getString(R.string.pref_sort_by_favorite))) {
+            if (sortBy.equals(getResources().getString(R.string.pref_sort_by_favorite))) {
                 emptyTitleText.setText(getString(R.string.no_favorite));
                 emptySubtitleText.setText(getString(R.string.no_favorite_sub_text));
             } else {
@@ -359,7 +358,7 @@ public class GridViewFragment extends Fragment implements SharedPreferences.OnSh
 
     @Override
     public void onRefresh(SwipyRefreshLayoutDirection direction) {
-        if (direction == SwipyRefreshLayoutDirection.BOTTOM) {
+        if (direction == SwipyRefreshLayoutDirection.BOTTOM && !sortBy.equals(getResources().getString(R.string.pref_sort_by_favorite))) {
             pageNoInteger++;
             if (checkConnection()) {
                 getActivity().getSupportLoaderManager().restartLoader(1, null, mainActivity).forceLoad();
