@@ -114,7 +114,7 @@ public class MovieDetailFragment extends Fragment implements DetailsAdapter.List
 
     private void setTextBackground() {
         if (movie != null) {
-            String posterURL = "http://image.tmdb.org/t/p/w500/" + movie.poster_path;
+            String posterURL = "http://image.tmdb.org/t/p/w185/" + movie.poster_path;
             if(getContext() != null) {
                 final ImageView imageView = new ImageView(getActivity());
                 Picasso.with(getContext()).load(posterURL).into(imageView);

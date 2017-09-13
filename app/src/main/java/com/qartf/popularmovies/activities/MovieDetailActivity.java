@@ -177,7 +177,7 @@ public class MovieDetailActivity extends AppCompatActivity implements AppBarLayo
     }
 
     private void setPoster() {
-        String posterURL = "http://image.tmdb.org/t/p/w500/" + movie.poster_path;
+        String posterURL = "http://image.tmdb.org/t/p/w342/" + movie.poster_path;
         Picasso.with(this).load(posterURL).into(toolbarImage);
     }
 

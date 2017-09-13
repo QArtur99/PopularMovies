@@ -30,11 +30,11 @@ public class PosterFragment extends Fragment {
     }
 
     public void setPoster(String url) {
-        posterURL = "http://image.tmdb.org/t/p/w500/" + url;
+        posterURL = "http://image.tmdb.org/t/p/w185/" + url;
     }
 
     public void loadNewPoster(String url) {
-        posterURL = "http://image.tmdb.org/t/p/w500/" + url;
+        posterURL = "http://image.tmdb.org/t/p/w185/" + url;
         if(imageView != null) {
             Picasso.with(getContext()).load(posterURL).into(imageView);
         }
